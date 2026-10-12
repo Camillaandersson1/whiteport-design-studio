@@ -2,6 +2,7 @@
 name: handoff
 source: wds
 description: Lämna över en avgränsad uppgift till en annan agent eller person mitt i sessionen. Samma överlämningsfil och återupptagningskommando som wrap, men sessionen fortsätter.
+used_by: [idun, saga, freya, mimir]
 tools: [wds/git]
 ---
 
