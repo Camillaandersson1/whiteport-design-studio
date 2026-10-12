@@ -1,6 +1,7 @@
 ---
 skill: ux-design
 used_by: [freya]
+tools: [wds/wireframe]
 prerequisites:
   - "{output_folder}/C-UX-Scenarios/00-ux-scenarios.md"
 output_folder: "{output_folder}/D-UX-Design"
