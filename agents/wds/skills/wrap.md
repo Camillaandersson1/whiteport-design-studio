@@ -2,6 +2,7 @@
 name: wrap
 source: wds
 description: Avsluta en session. Skriver överlämningen (till samma eller en annan agent), jämför sessionen med alla soul-filer och uppdaterar dem i repot och privat, för skill-ändringar till källrepot och katalogen, rapporterar incidenter och föreslår G&C-punkter, uppdaterar projektloggen och delar arbetet.
+used_by: [idun, saga, freya, mimir]
 tools: [wds/git]
 ---
 
