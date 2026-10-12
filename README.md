@@ -52,7 +52,7 @@ your-project-repo/
 ├── sessions/                      handovers — every wrap is one
 │   ├── <user>/<agent>/<session-id>-<from>-<summary>.md
 │   └── all-users/<agent>/         for whoever runs that agent next
-└── projects/<project>/design-process/
+└── projects/<project>/            WDS folders directly in the project
     ├── A-Product-Brief/  B-Trigger-Map/  C-UX-Scenarios/  D-Design-System/  E-Development/
     └── _progress/design-log.md    the project's shared timeline
 ```

@@ -15,13 +15,13 @@ WDS is its own framework, fully independent of BMad. Mårten Angner approves eve
 - **No secrets in any file.** All keys live in Bitwarden and are fetched at runtime with `bw get password "<item>"`. Files may name the Bitwarden item, never the value.
 - **Paths are relative to the repo root** (`agents/wds/skills/...`), so they work unchanged in project repos.
 - **Policy lives in `governance/`**, one folder per source: `governance/wds/` (the default, a copy of `agents/wds/data/templates/governance/`), `governance/<org>/` (the organization's policy, edited only in its source repo) and, optionally, `governance/<project>/` (tightenings). `governance/policies.md` lists the files in reading order, and agents follow it at session start. A folder with a `.source` file is a synced copy and is never edited. Repos where Idun has not set up governance have no `governance/` folder. See [agents/wds/README.md](agents/wds/README.md#governance-policy).
-- **Memory lives in the project repo** (`sessions/<user>/<agent>/`, `users/<user>/`, `design-process/_progress/`). Every wrap is a handover — to the same agent or another one. Agent Space is only for realtime and is optional.
+- **Memory lives in the project repo** (`sessions/<user>/<agent>/`, `users/<user>/`, `projects/<project>/_progress/`). Every wrap is a handover — to the same agent or another one. Agent Space is only for realtime and is optional.
 
 ## Proposed: projects/ instead of docs/
 
-Tested in visita-kommunikation (2026-09-27): every project lives in `projects/<project>/design-process/` as a **completely separate WDS folder structure** (A-Product-Brief … E-Development, `_progress/`). One repo can then hold several WDS projects, and each one keeps its own design log. Shared material (brand, tone, contacts) goes in `shared/<org>/`, never inside a project.
+Tested in visita-kommunikation (2026-09-27): every project lives in `projects/<project>/` as a **completely separate WDS folder structure** (A-Product-Brief … E-Development, `_progress/`). The WDS folders lie directly in the project folder, with no `design-process/` level in between: `projects/` already says what the folder is. One repo can then hold several WDS projects, and each one keeps its own design log. Shared material (brand, tone, contacts) goes in `shared/<org>/`, never inside a project.
 
-This works better than the single `docs/` output folder. The wider pattern (folders with one owner: `agents/`, `governance/`, `projects/`, `users/`, `sessions/`, and where tasks live) is in [agents/wds/data/repo-structure.md](agents/wds/data/repo-structure.md). Proposal: make `projects/<project>/design-process/` the default `output_folder`, and have agents resolve it from the project repo's `AGENTS.md`.
+This works better than the single `docs/` output folder. The wider pattern (folders with one owner: `agents/`, `governance/`, `projects/`, `users/`, `sessions/`, and where tasks live) is in [agents/wds/data/repo-structure.md](agents/wds/data/repo-structure.md). Proposal: make `projects/<project>/` the default `output_folder`, and have agents resolve it from the project repo's `AGENTS.md`.
 
 ## Legacy, pending removal
 
