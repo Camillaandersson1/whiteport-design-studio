@@ -28,7 +28,7 @@ What a WDS workspace contains and the starting content of each file. Used by org
 │   ├── <org>/                    The org's policy. Edited only in its source repo; a copy elsewhere (has .source).
 │   └── <project>/                Optional tightenings for this repo.
 ├── shared/<org>/                 Shared across projects: org profile, brand, contacts
-├── projects/<project>/design-process/
+├── projects/<project>/           The WDS folders directly in the project, no design-process/ level
 │   ├── A-Product-Brief/ … E-Development/
 │   └── _progress/
 │       ├── wds-project-outline.yaml
@@ -36,7 +36,7 @@ What a WDS workspace contains and the starting content of each file. Used by org
 └── .wds/me.md                    Who sits at this machine. Gitignored, one per machine.
 ```
 
-A single-project repo may keep its `output_folder` at the root instead of under `projects/`. `AGENTS.md` says which.
+A single-project repo may keep its `output_folder` at the root instead of under `projects/`, for example `design-process/`. `AGENTS.md` says which. Under `projects/` a project never gets a `design-process/` subfolder.
 
 ---
 
@@ -77,7 +77,7 @@ Run wrap: `agents/wds/skills/wrap.md`.
 
 ## Rules
 
-- One project = one folder under `projects/`, each a separate WDS structure. `output_folder` is `projects/<project>/design-process/`.
+- One project = one folder under `projects/`, each a separate WDS structure. `output_folder` is `projects/<project>/`, with the WDS folders directly inside it.
 - What several projects share lives in `shared/<org>/`, never copied into projects.
 - One folder per source in `agents/`. WDS agents are synced from whiteport-design-studio and never edited here.
 - Policy lives in `governance/`, one folder per source: `wds/`, `<org>/` and, optionally, `<project>/`. A folder with a `.source` file is a synced copy and is read-only; edit it in its source repo. `governance/policies.md` lists the files in reading order.
@@ -201,7 +201,7 @@ repo: <folder>
 org: <org, or empty>
 scope: solo | team | organization
 created: YYYY-MM-DD
-output_folder: projects/<project>/design-process
+output_folder: projects/<project>
 code: <folder in this repo, such as app/ | another repo | undecided>
 agents: [idun, saga, freya, mimir]
 agent_space: none | <where it runs>
