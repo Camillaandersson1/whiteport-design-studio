@@ -56,13 +56,18 @@ Do not print the files.
 Used when the agent is started with a resume command: `/saga visita-kommunikation 2026-09-27_13-22 product brief en karriar tack`.
 First the repo, then the start time of the session that wrote the handover, then a short summary of what the handover is about. The repo and the summary may be left out. The file is found by the timestamp; the summary is there so the user knows what the command is for.
 
-1. **Right repo?** Compare the repo name with the current repo folder.
-   - Same, or no repo given: continue.
-   - Different: look for it under the dev root (`C:/dev/*/<repo>` or `~/dev/*/<repo>`). Found: tell the user in one line to start the session there, and stop. Agent sessions should run in the repo they work in. Not found: say the repo is not cloned on this machine and stop.
+1. **Which repo?** A session runs in the repo it works in, or in a folder above it, such as the dev root.
+   - The current folder is the repo, or no repo is given and the current folder is a repo: continue.
+   - The current folder is above the repo: find it below (`<current>/<repo>` or `<current>/*/<repo>`). Found: that is **the session's repo** (see below). Continue without asking.
+   - No repo is given and the current folder is not a repo: look for the timestamp in the repos below it, as in step 2. Exactly one match: that repo is the session's repo. Several: list them and ask.
+   - The current folder is another repo: look for it under the dev root (`C:/dev/*/<repo>` or `~/dev/*/<repo>`). Found: tell the user in one line to start the session there, or in the dev root, and stop. Not found: say the repo is not cloned on this machine and stop.
+
+   **The session's repo.** When it is not the current folder, it applies for the whole session, wrap included. Read its `AGENTS.md` now, because the host loaded only the current folder's. Read every repo path (`AGENTS.md`, `agents/wds/`, `governance/`, `users/`, `sessions/`, `projects/`) from it. Run git there (`git -C <repo path>`). Show the path in the resume block as `Repo:`.
 2. Find the file `<timestamp>-*.md` in `sessions/*/<agent_id>/` at the repo root or in a project folder (`projects/*/sessions/*/<agent_id>/`, any letter case). If the repo's `sessions/README.md` says `sessions: private`, look in the user's own sessions folder for this repo instead: the `sessions:` line in `projects/<repo>.md` in the private cabinet (wrap step 1). Filename: `<session-id>-<från>-<sammandrag>.md`, any user folder including `all-users`. Several matches: pick the one whose `<sammandrag>` matches the summary in the command, else prefer the current user's folder, else list them and ask.
 3. Read it. Run "Step: soul" and "Step: governance" silently first: a resumed session follows the policy too. Then print EXACTLY:
 
    ── Återupptar <Agent> · <repo> · <timestamp> ─
+   Repo:   <path, only when it is not the current folder>
    Om:     <sammandrag from the filename, with spaces>
    Från:   <från> (<user>)
    Nästa:  <first line or step of ## Nästa>
@@ -78,6 +83,7 @@ First the repo, then the start time of the session that wrote the handover, then
 
 Read the latest handover to this agent: `sessions/<user>/<agent_id>/` (newest file by name), at the repo root and in project folders (`projects/*/sessions/`). If the repo's `sessions/README.md` says `sessions: private`, read from the user's own sessions folder for this repo instead (see resume, step 2).
 Also check `sessions/all-users/<agent_id>/` for files with `status: öppen` (handovers to anyone running this agent).
+In a folder above several repos (no `AGENTS.md` of its own, such as the dev root), look in the repos below it instead, and list the open handovers to this agent with their repo. The one the user takes decides the session's repo (resume, step 1).
 IF an open handover exists: show it (summary from the filename, Nästa and projects) and propose taking it.
 When the user accepts: set `status: tagen` and `tagen_av: <session-id>` in the file, commit.
 Wrap sets `status: klar` when the work is done. Never delete a handover.
