@@ -3,7 +3,7 @@ name: sync
 type: script
 version: "2.0.0"
 description: Kör synken av skills, agenter och governance mellan WDS-repot, personens privata repo, projektrepona och datorns .claude-mapp. Skriptet ligger i sync/sync.py.
-used_by: [sync-skills, idun]
+used_by: [sync-skills, install-wds, librarian, org-onboarding, project-setup]
 ---
 
 # WDS Sync
