@@ -3,7 +3,7 @@ name: org-onboarding
 description: Turns a confirmed qualification summary into a working WDS workspace, and for organizations into an org profile, a scaled governance set and onboarded people.
 used_by: [idun]
 version: 2.0
-tools: [wds/git, wds/sync, wds/github]
+tools: [wds/git, wds/sync, wds/github, wds/agent-space]
 ---
 
 # Org Onboarding
