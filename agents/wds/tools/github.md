@@ -2,7 +2,7 @@
 name: github
 description: GitHub CLI for setup work. Login, creating repos, and reading members and collaborators for access maps.
 type: cli
-used_by: [org-onboarding, user-onboarding, install-wds]
+used_by: [org-onboarding, project-setup, user-onboarding, install-wds]
 ---
 
 # Tool: github
