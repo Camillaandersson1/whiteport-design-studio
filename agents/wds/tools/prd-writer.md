@@ -2,7 +2,7 @@
 name: prd-writer
 version: "1.0.0"
 description: Writes formal PRD documents from Work Orders. Use when a Work Order requires a master or feature PRD document.
-agents: [saga, freya, mimir]
+used_by: [prd-workflow]
 ---
 
 # Agent: PRD Writer
