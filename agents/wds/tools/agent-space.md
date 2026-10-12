@@ -2,6 +2,7 @@
 name: agent-space
 source: wds
 description: Agent Space (Supabase) for realtime agent presence, messages and handoff tokens. Optional — WDS works without it.
+used_by: [org-onboarding]
 ---
 
 # Agent Space
