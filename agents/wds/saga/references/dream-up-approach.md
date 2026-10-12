@@ -299,9 +299,9 @@ Steps are outlined one at a time after scenario creation. The first step is proc
 **Read these files:**
 ```
 {output_folder}/A-Product-Brief/01-product-brief.md
-{output_folder}/A-Product-Brief/02-platform-requirements.md
-{output_folder}/A-Product-Brief/03-content-language.md
-{output_folder}/A-Product-Brief/04-visual-direction.md
+{output_folder}/A-Product-Brief/02-content-language.md
+{output_folder}/A-Product-Brief/03-visual-direction.md
+{output_folder}/A-Product-Brief/04-platform-requirements.md
 ```
 
 **Extract and summarize:**

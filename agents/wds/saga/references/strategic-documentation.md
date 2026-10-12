@@ -43,7 +43,7 @@ phases:
     status: [not_started|in_progress|complete]
     artifacts:
       - 01-product-brief.md
-      - 02-platform-requirements.md (if created)
+      - 04-platform-requirements.md (if created)
       - pitch-deck.md (if created)
   
   phase_2_trigger_mapping:
@@ -251,7 +251,7 @@ Generate complete Product Brief document using template.
 
 **For deliverables** (numbered in reading order within their folder):
 - `01-product-brief.md`
-- `02-platform-requirements.md`
+- `04-platform-requirements.md`
 - `00-trigger-map.md`
 
 **For examples:**

@@ -139,10 +139,6 @@ Produces the Product Brief document suite through structured discovery conversat
   <step id="suite-check">
     Based on what came up in discovery, determine extensions needed:
 
-    <signal check="platform-requirements">
-      Triggered by: anything to be built (site, app, portal, admin, integrations, infrastructure), platforms, hosting, technical constraints
-    </signal>
-
     <signal check="content-language">
       Triggered by: brand voice, tone, language, SEO keywords, content strategy, multiple languages, copywriting
     </signal>
@@ -151,52 +147,19 @@ Produces the Product Brief document suite through structured discovery conversat
       Triggered by: design style, brand aesthetics, visual references, logo, colors, typography, imagery
     </signal>
 
+    <signal check="platform-requirements">
+      Triggered by: anything to be built (site, app, portal, admin, integrations, infrastructure), platforms, hosting, technical constraints
+    </signal>
+
     Run the triggered steps in the suite's reading order:
-    IF platform-requirements triggered:
-      → run <step id="platform-requirements-discovery"> before writing
     IF content-language triggered:
       → run <step id="content-language-discovery"> before writing
     IF visual-direction triggered:
       → run <step id="visual-direction-discovery"> before writing
+    IF platform-requirements triggered:
+      → run <step id="platform-requirements-discovery"> before writing
     ELSE:
       → go to <step id="generate">
-  </step>
-
-  <!-- ═══════════════════════════════════════════
-       PLATFORM REQUIREMENTS EXTENSION (optional)
-       Strategic boundaries for what is built. Not a technical spec:
-       the master PRD (E-Development/000-PRD.md) is written after it.
-  ═══════════════════════════════════════════ -->
-
-  <step id="platform-requirements-discovery">
-    Build on the constraints category. Ask only for what is new.
-
-    <category id="platforms">
-      Goal: What is built and where it runs: web, PWA, native apps, admin, infrastructure.
-      Opening: "What are the pieces people will actually use, and on which devices?"
-    </category>
-
-    <category id="integrations">
-      Goal: Systems the product connects to: auth, data, payments, third parties.
-      Opening: "Which systems does this need to talk to, and which of them do we not control?"
-    </category>
-
-    <category id="platform-constraints">
-      Goal: Technical, budget, team, regulatory and timeline limits on the platform. Include store and distribution rules where they apply.
-      Opening: "What limits how we can build this: money, people, rules or time?"
-    </category>
-
-    <category id="complexity">
-      Goal: What is hard, what is routine, and where the risk sits.
-      Opening: "Which part worries you most technically, and which part is routine?"
-    </category>
-
-    <category id="knowledge-gaps">
-      Goal: What must be researched, spiked or decided before building, and who owns each answer.
-      Opening: "What do we not know yet that could change how this is built?"
-    </category>
-
-    → continue with the next triggered step, or go to <step id="generate">
   </step>
 
   <!-- ═══════════════════════════════════════════
@@ -272,6 +235,43 @@ Produces the Product Brief document suite through structured discovery conversat
   </step>
 
   <!-- ═══════════════════════════════════════════
+       PLATFORM REQUIREMENTS EXTENSION (optional)
+       Strategic boundaries for what is built. Not a technical spec:
+       the master PRD (E-Development/000-PRD.md) is written after it.
+  ═══════════════════════════════════════════ -->
+
+  <step id="platform-requirements-discovery">
+    Build on the constraints category. Ask only for what is new.
+
+    <category id="platforms">
+      Goal: What is built and where it runs: web, PWA, native apps, admin, infrastructure.
+      Opening: "What are the pieces people will actually use, and on which devices?"
+    </category>
+
+    <category id="integrations">
+      Goal: Systems the product connects to: auth, data, payments, third parties.
+      Opening: "Which systems does this need to talk to, and which of them do we not control?"
+    </category>
+
+    <category id="platform-constraints">
+      Goal: Technical, budget, team, regulatory and timeline limits on the platform. Include store and distribution rules where they apply.
+      Opening: "What limits how we can build this: money, people, rules or time?"
+    </category>
+
+    <category id="complexity">
+      Goal: What is hard, what is routine, and where the risk sits.
+      Opening: "Which part worries you most technically, and which part is routine?"
+    </category>
+
+    <category id="knowledge-gaps">
+      Goal: What must be researched, spiked or decided before building, and who owns each answer.
+      Opening: "What do we not know yet that could change how this is built?"
+    </category>
+
+    → continue with the next triggered step, or go to <step id="generate">
+  </step>
+
+  <!-- ═══════════════════════════════════════════
        GENERATE
   ═══════════════════════════════════════════ -->
 
@@ -285,9 +285,9 @@ Produces the Product Brief document suite through structured discovery conversat
       <input>All discovery data collected across categories</input>
       <output>
         - `{output_folder}/A-Product-Brief/01-product-brief.md` (always)
-        - `{output_folder}/A-Product-Brief/02-platform-requirements.md` (if platform-requirements triggered)
-        - `{output_folder}/A-Product-Brief/03-content-language.md` (if content-language triggered)
-        - `{output_folder}/A-Product-Brief/04-visual-direction.md` (if visual-direction triggered)
+        - `{output_folder}/A-Product-Brief/02-content-language.md` (if content-language triggered)
+        - `{output_folder}/A-Product-Brief/03-visual-direction.md` (if visual-direction triggered)
+        - `{output_folder}/A-Product-Brief/04-platform-requirements.md` (if platform-requirements triggered)
       </output>
     </subagent>
 
@@ -302,9 +302,9 @@ Produces the Product Brief document suite through structured discovery conversat
     Present what was written:
     "Product Brief suite written:
     ✓ 01-product-brief.md
-    [✓ 02-platform-requirements.md, if written]
-    [✓ 03-content-language.md, if written]
-    [✓ 04-visual-direction.md, if written]
+    [✓ 02-content-language.md, if written]
+    [✓ 03-visual-direction.md, if written]
+    [✓ 04-platform-requirements.md, if written]
 
     Read through it and let me know if anything needs adjusting."
 

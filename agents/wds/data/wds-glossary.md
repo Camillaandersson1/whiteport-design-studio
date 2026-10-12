@@ -46,9 +46,9 @@ progress/
 ### Strategy (Phase 1)
 The suite is numbered in reading order. The numbers are fixed, and a skipped document leaves its number free.
 - **Product Brief** — `A-Product-Brief/01-product-brief.md`. Strategic foundation: vision, goals, constraints, target users. Required before any design work.
-- **Platform Requirements** — `A-Product-Brief/02-platform-requirements.md`. Strategic boundaries for what is built: platforms, integrations, constraints, complexity, knowledge gaps. Not a technical spec. Required before the master PRD.
-- **Content Language** — `A-Product-Brief/03-content-language.md`. Tone, vocabulary, brand voice.
-- **Visual Direction** — `A-Product-Brief/04-visual-direction.md`. Aesthetic references, colour, typography intent.
+- **Content Language** — `A-Product-Brief/02-content-language.md`. Tone, vocabulary, brand voice.
+- **Visual Direction** — `A-Product-Brief/03-visual-direction.md`. Aesthetic references, colour, typography intent.
+- **Platform Requirements** — `A-Product-Brief/04-platform-requirements.md`. Strategic boundaries for what is built: platforms, integrations, constraints, complexity, knowledge gaps. Not a technical spec. Required before the master PRD.
 
 ### Research (Phase 2)
 - **Trigger Map** — `B-Trigger-Map/00-trigger-map.md`. User psychology mapped to business goals. Required before UX Scenarios.

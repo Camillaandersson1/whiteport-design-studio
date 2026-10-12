@@ -9,14 +9,14 @@ The files are numbered in reading order. The numbers are fixed: a document that 
 Always write:
 - `{output_folder}/A-Product-Brief/01-product-brief.md`
 
-Write if platform requirements data was collected:
-- `{output_folder}/A-Product-Brief/02-platform-requirements.md`
-
 Write if content & language data was collected:
-- `{output_folder}/A-Product-Brief/03-content-language.md`
+- `{output_folder}/A-Product-Brief/02-content-language.md`
 
 Write if visual direction data was collected:
-- `{output_folder}/A-Product-Brief/04-visual-direction.md`
+- `{output_folder}/A-Product-Brief/03-visual-direction.md`
+
+Write if platform requirements data was collected:
+- `{output_folder}/A-Product-Brief/04-platform-requirements.md`
 
 ## 01-product-brief.md structure
 
@@ -52,7 +52,31 @@ Write if visual direction data was collected:
 [Technical, budget, timeline, regulatory]
 ```
 
-## 02-platform-requirements.md structure
+## 02-content-language.md structure
+
+```
+# Content & Language — [Project Name]
+
+## Brand Personality
+## Tone of Voice
+## Language Strategy
+## SEO Keywords
+## Content Structure
+```
+
+## 03-visual-direction.md structure
+
+```
+# Visual Direction — [Project Name]
+
+## Visual References
+## Design Style
+## Color Direction
+## Typography Direction
+## Imagery Style
+```
+
+## 04-platform-requirements.md structure
 
 Strategic boundaries for what is built, readable by the client. Every decision carries its reason and who made it. The master PRD (`E-Development/000-PRD.md`) is written after this document and connects it to the features.
 
@@ -74,30 +98,6 @@ Strategic boundaries for what is built, readable by the client. Every decision c
 
 ## Knowledge Gaps
 [What must be researched, spiked or decided, and who owns each answer]
-```
-
-## 03-content-language.md structure
-
-```
-# Content & Language — [Project Name]
-
-## Brand Personality
-## Tone of Voice
-## Language Strategy
-## SEO Keywords
-## Content Structure
-```
-
-## 04-visual-direction.md structure
-
-```
-# Visual Direction — [Project Name]
-
-## Visual References
-## Design Style
-## Color Direction
-## Typography Direction
-## Imagery Style
 ```
 
 ## Instructions

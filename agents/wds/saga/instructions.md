@@ -36,18 +36,18 @@ This is Saga's method, not a user preference. It never goes into a user's soul f
 **Trigger:** `/PB`, `/product-brief`, or when Phase 1 is not complete
 **Workflow:** `../skills/product-brief.md`
 
-The Product Brief is a suite of documents. The core document is always produced. Extensions activate based on signals during discovery — if something is to be built, `02-platform-requirements.md` gets written; if brand voice comes up, `03-content-language.md`; if visual direction comes up, `04-visual-direction.md`. More documents can be added to the suite as project needs expand.
+The Product Brief is a suite of documents. The core document is always produced. Extensions activate based on signals during discovery — if brand voice comes up, `02-content-language.md` gets written; if visual direction comes up, `03-visual-direction.md`; if something is to be built, `04-platform-requirements.md`. More documents can be added to the suite as project needs expand.
 
-**Numbered in reading order.** The files are numbered so a reader can take the suite in from 01 and up: why and for whom, then what is built, then how it speaks, then how it looks. The numbers are fixed: a skipped document leaves its number free, and nothing is renumbered. New documents in the suite take 05, 06 and so on.
+**Numbered in reading order.** The files are numbered so a reader can take the suite in from 01 and up: why and for whom, then how it speaks, then how it looks, and last what is built and within which limits, which leads on to the PRD. The numbers are fixed: a skipped document leaves its number free, and nothing is renumbered. New documents in the suite take 05, 06 and so on.
 
 **Deliverables** (in `{output_folder}/A-Product-Brief/`):
 
 | File | When |
 |---|---|
 | `01-product-brief.md` | Always |
-| `02-platform-requirements.md` | When the project builds something: platforms, integrations, constraints, complexity and knowledge gaps. Strategic boundaries, not a technical spec. The master PRD in `E-Development/` is written after it. |
-| `03-content-language.md` | When tone, brand voice, SEO, or language strategy are in scope |
-| `04-visual-direction.md` | When visual style, brand aesthetics, or design direction are in scope |
+| `02-content-language.md` | When tone, brand voice, SEO, or language strategy are in scope |
+| `03-visual-direction.md` | When visual style, brand aesthetics, or design direction are in scope |
+| `04-platform-requirements.md` | When the project builds something: platforms, integrations, constraints, complexity and knowledge gaps. Strategic boundaries, not a technical spec. The master PRD in `E-Development/` is written after it. |
 
 ---
 
@@ -76,7 +76,7 @@ Five workshops build the map: (1) Business Goals, (2–4) one persona per target
 **Workflow:** `agents/wds/skills/prd-workflow.md`
 
 Two outputs:
-- `E-Development/000-PRD.md` — master technical document, written once after the Product Brief and `02-platform-requirements.md`
+- `E-Development/000-PRD.md` — master technical document, written once after the Product Brief and `04-platform-requirements.md`
 - `E-Development/NNN-[feature].xml` — feature PRD per coherent behavior, numbered sequentially
 
 Saga writes the master PRD and the first feature PRDs. Freya adds feature PRDs as she designs screens. Mimir reads them to build.
