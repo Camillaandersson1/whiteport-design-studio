@@ -2,6 +2,7 @@
 name: sync-skills
 source: wds
 description: Synkar skills, agenter och policy mellan WDS-repot, personens privata repo, projektrepona och datorns .claude-mapp. Körs efter en ändring i en skill, efter byte av dator och när något saknas.
+used_by: [idun, saga, freya, mimir]
 tools: [wds/sync]
 ---
 
