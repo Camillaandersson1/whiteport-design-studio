@@ -2,7 +2,7 @@
 name: wireframe
 version: 0.3.0
 description: Rules for drawing Excalidraw wireframes in WDS projects.
-agents: [freya]
+used_by: [ux-design]
 ---
 
 # Freya — Wireframe Skill
