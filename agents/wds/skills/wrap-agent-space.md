@@ -1,3 +1,11 @@
+---
+name: wrap-agent-space
+source: wds
+description: Session wrap for the Agent Space variant. Saves state and handoffs through the memory tool.
+used_by: [idun, saga, freya, mimir]
+tools: [wds/memory]
+---
+
 # /wrap — Session Wrap Skill
 
 **Invocation:** `/wrap` or `/wrap [target-agent]`
