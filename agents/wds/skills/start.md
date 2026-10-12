@@ -1,3 +1,11 @@
+---
+name: start
+source: wds
+description: Session resume for the Agent Space variant. Loads saved state through the memory tool.
+used_by: [idun, saga, freya, mimir]
+tools: [wds/memory]
+---
+
 # /start — Session Resume Skill
 
 **Invocation:** `/start` (also called automatically from agent activation files)
