@@ -12,7 +12,7 @@
 
 - `docs/A-Product-Brief/` - Strategic foundation from Saga
 - `docs/B-Trigger-Map/` - User insights and business goals from Saga
-- `docs/A-Product-Brief/platform-requirements.md` - Technical constraints from Saga (optional but helpful)
+- `docs/A-Product-Brief/02-platform-requirements.md` - Technical constraints from Saga (optional but helpful)
 
 **I'm your creative transformation hub - turning strategy into experiences users love!**
 

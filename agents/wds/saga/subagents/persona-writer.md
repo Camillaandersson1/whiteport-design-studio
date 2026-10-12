@@ -85,7 +85,7 @@ Score: Frequency (1–5) + Intensity (1–5) + Fit (1–5) = Total /15
 ---
 
 _Produced by Saga — [date]_
-_Source: Workshop 2–4, product-brief.md_
+_Source: Workshop 2–4, 01-product-brief.md_
 ```
 
 ## Instructions

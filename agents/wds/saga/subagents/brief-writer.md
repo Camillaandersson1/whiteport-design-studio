@@ -4,16 +4,21 @@ Write the Product Brief document suite from the discovery data Saga has collecte
 
 ## What to write
 
+The files are numbered in reading order. The numbers are fixed: a document that is not written leaves its number free.
+
 Always write:
-- `{output_folder}/A-Product-Brief/product-brief.md`
+- `{output_folder}/A-Product-Brief/01-product-brief.md`
+
+Write if platform requirements data was collected:
+- `{output_folder}/A-Product-Brief/02-platform-requirements.md`
 
 Write if content & language data was collected:
-- `{output_folder}/A-Product-Brief/content-language.md`
+- `{output_folder}/A-Product-Brief/03-content-language.md`
 
 Write if visual direction data was collected:
-- `{output_folder}/A-Product-Brief/visual-direction.md`
+- `{output_folder}/A-Product-Brief/04-visual-direction.md`
 
-## product-brief.md structure
+## 01-product-brief.md structure
 
 ```
 # Product Brief — [Project Name]
@@ -47,7 +52,31 @@ Write if visual direction data was collected:
 [Technical, budget, timeline, regulatory]
 ```
 
-## content-language.md structure
+## 02-platform-requirements.md structure
+
+Strategic boundaries for what is built, readable by the client. Every decision carries its reason and who made it. The master PRD (`E-Development/000-PRD.md`) is written after this document and connects it to the features.
+
+```
+# Platform Requirements: [Project Name]
+[Date] · Living document
+
+## Platforms
+[What is built and where it runs: web, PWA, native apps, admin, infrastructure]
+
+## Integrations
+[Systems it connects to, and which of them we do not control]
+
+## Constraints
+[Technical, budget, team, regulatory, distribution and timeline limits]
+
+## Complexity & Challenges
+[What is hard, what is routine, where the risk sits]
+
+## Knowledge Gaps
+[What must be researched, spiked or decided, and who owns each answer]
+```
+
+## 03-content-language.md structure
 
 ```
 # Content & Language — [Project Name]
@@ -59,7 +88,7 @@ Write if visual direction data was collected:
 ## Content Structure
 ```
 
-## visual-direction.md structure
+## 04-visual-direction.md structure
 
 ```
 # Visual Direction — [Project Name]

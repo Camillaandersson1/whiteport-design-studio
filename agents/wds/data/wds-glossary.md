@@ -44,9 +44,11 @@ progress/
 ## Artifacts
 
 ### Strategy (Phase 1)
-- **Product Brief** — `A-Product-Brief/product-brief.md`. Strategic foundation: vision, goals, constraints, target users. Required before any design work.
-- **Content Language** — `A-Product-Brief/content-language.md`. Tone, vocabulary, brand voice.
-- **Visual Direction** — `A-Product-Brief/visual-direction.md`. Aesthetic references, colour, typography intent.
+The suite is numbered in reading order. The numbers are fixed, and a skipped document leaves its number free.
+- **Product Brief** — `A-Product-Brief/01-product-brief.md`. Strategic foundation: vision, goals, constraints, target users. Required before any design work.
+- **Platform Requirements** — `A-Product-Brief/02-platform-requirements.md`. Strategic boundaries for what is built: platforms, integrations, constraints, complexity, knowledge gaps. Not a technical spec. Required before the master PRD.
+- **Content Language** — `A-Product-Brief/03-content-language.md`. Tone, vocabulary, brand voice.
+- **Visual Direction** — `A-Product-Brief/04-visual-direction.md`. Aesthetic references, colour, typography intent.
 
 ### Research (Phase 2)
 - **Trigger Map** — `B-Trigger-Map/00-trigger-map.md`. User psychology mapped to business goals. Required before UX Scenarios.
@@ -61,7 +63,7 @@ progress/
 
 ### Development (Phase 5)
 - **Tech Audit** — `E-Development/000-tech-audit.md`. Living architecture document. Required before any PRD on an existing codebase.
-- **Master PRD** — `E-Development/000-PRD.md`. Platform requirements, written once, updated as project evolves.
+- **Master PRD** — `E-Development/000-PRD.md`. The technical glue: architecture, dependencies, decisions and open questions. Written once after the Product Brief and Platform Requirements, updated as the project evolves. Not the same document as Platform Requirements.
 - **Feature PRD** — `E-Development/NNN-[feature].xml`. One per Work Order.
 - **Change Order** — `E-Development/NNN-NN-[slug].xml`. Feedback/change against a parent PRD.
 - **Work Order** — `E-Development/WO-NNN-[slug].md`. Task written by Freya for Mimir. Contains: objective, scope, files, acceptance criteria.
