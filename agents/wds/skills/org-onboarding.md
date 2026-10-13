@@ -65,7 +65,7 @@ Takes Idun from a confirmed scope to a repo where people can start working with 
        Run its steps 2–4 for each project. The handover to Saga is written once, in step 8.
     4. **People.** `users/_template/`, `users/README.md`, `sessions/`, and `.wds/` in `.gitignore`.
     5. **Shared org material.** The org profile from step 1, at the level it serves: the repo root, or `<client>/` in an agency repo.
-       Visual identity, people, communication, contacts and timeline go at the same level when they come up. Org scope only. `shared/` is a last resort.
+       The brand (`brand/`: visual identity, tone of voice, design system), people, communication, contacts and timeline go at the same level when they come up. Org scope only. `shared/` is a last resort.
     6. **Agents.** Install the WDS agents and their adapters as described in "Installing in a project" in
        `agents/wds/README.md`, using the sync tool. Never copy them by hand.
 

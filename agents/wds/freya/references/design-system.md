@@ -195,7 +195,7 @@ organisms/
 ### 1. Initialize Design System
 **First component triggers auto-initialization**
 - Creates folder structure
-- Creates design-tokens.md
+- Creates design-tokens.md in `brand/design-system/`, unless it already exists there (tokens are the brand's, never a project's)
 - Creates component-library-config.md (if Mode C)
 
 ### 2. Create New Component

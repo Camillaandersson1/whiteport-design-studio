@@ -14,7 +14,7 @@ Roten består av mappar som går att droppa in. Varje toppmapp är en *sorts* sa
 | `users/` | personen | `users/martenangner/` |
 | `sessions/` | personen och agenten | `sessions/martenangner/saga/` |
 
-Bredvid dem ligger innehållet som delas mellan projekten, på den nivå det gäller: `visual-identity/`, `people/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md`. Se [Delat material](#delat-material).
+Bredvid dem ligger innehållet som delas mellan projekten, på den nivå det gäller: `brand/`, `people/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md`. Se [Delat material](#delat-material).
 
 Tre regler:
 
@@ -28,13 +28,22 @@ Tre regler:
 
 | Repot | Nivån | Exempel |
 |---|---|---|
-| Tillhör en kund eller organisation | roten | `visual-identity/`, `people/<person>/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md` |
-| En byrås repo med flera kunder | kundens mapp, bredvid kundens projekt | `<kund>/visual-identity/` |
+| Tillhör en kund eller organisation | roten | `brand/`, `people/<person>/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md` |
+| En byrås repo med flera kunder | kundens mapp, bredvid kundens projekt | `<kund>/brand/` |
 
 - En mapp som heter `shared/` är en sista utväg, när inget annat fungerar. Äldre repon har ofta `shared/<org>/`. Läs det som finns där och föreslå att flytta det till rätt nivå.
-- **Visuell identitet och designsystem är två saker.** Den visuella identiteten är varumärket: riktning, märke, pigment, typsnitt, tokens, tillgångar och moodboard. Den finns en gång, på den nivå den gäller. Ett designsystem är komponenterna som använder identiteten i ett medium. Varje projekt har sitt eget `D-Design-System/`, byggt på identitetens tokens. En token ändras i identiteten, aldrig i ett projekt.
-- I produktbriefen är `A-Product-Brief/03-visual-direction.md` en kort pekare till den visuella identiteten, plus det som bara gäller projektet.
-- Referens: welqora-analysis, se regeln i dess `AGENTS.md` och rotmapparna `visual-identity/`, `people/`, `communication/` och `timeline.md`.
+- **Varumärket ligger i `brand/`**, en gång, på den nivå det gäller. Det har tre delar:
+
+  | Del | Vad |
+  |---|---|
+  | `brand/visual-identity/` | Den visuella riktningen (`visual-direction.md`), märket, moodboarden och tillgångarna. Varför och hur det ser ut. |
+  | `brand/tone-of-voice.md` | Vad vi tror på, hur vi låter, orden och berättarprinciperna. För hela bolaget. |
+  | `brand/design-system/` | Tokens (`design-tokens.md`) och komponenterna som fler än ett projekt använder. |
+
+- `people/`, `communication/`, `contacts.md`, `timeline.md` och `org-profile.md` ligger bredvid `brand/`, inte i den.
+- Varje projekt har ett tunt `D-Design-System/` med bara de komponenter som bara det projektet använder. När ett andra projekt behöver en komponent flyttar den upp till `brand/design-system/`. En token ändras bara i `brand/design-system/`, aldrig i ett projekt.
+- I produktbriefen är `A-Product-Brief/02-content-language.md` en kort pekare till `brand/tone-of-voice.md` och `03-visual-direction.md` en kort pekare till `brand/visual-identity/`, båda plus det som bara gäller projektet. Finns inget `brand/` när rösten eller den visuella riktningen skrivs första gången, skrivs det som gäller hela bolaget i `brand/` och det som är projektets eget i projektfilen.
+- Referens: welqora-analysis, se regeln i dess `AGENTS.md`, `brand/README.md` och rotmapparna `brand/`, `people/`, `communication/` och `timeline.md`.
 
 ## En källa inne i `agents/`
 

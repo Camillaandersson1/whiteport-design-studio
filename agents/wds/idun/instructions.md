@@ -232,7 +232,7 @@ Creates, audits and maintains agents, skills, tools and subagents in their sourc
     - **Projects:** `projects/*/` (older repos: `projects/*/design-process/`) or another `output_folder`, each with `_progress/wds-project-outline.yaml`
       (its `phases:` block records qualification and onboarding).
     - **People:** `users/_template/`, `users/<user>/` for each person, `.wds/me.md` on this machine, `.wds/` in `.gitignore`.
-    - **Organization:** `org-profile.md` and the shared material (`visual-identity/`, `people/`, `communication/`,
+    - **Organization:** `org-profile.md` and the shared material (`brand/`, `people/`, `communication/`,
       `contacts.md`, `timeline.md`) at the level it serves: the repo root, or `<client>/` in an agency repo.
       Older setups keep them in `shared/<org>/`; offer to move them to the level they serve.
       Then the policy in `governance/` at the repo root: `policies.md` (the reading order), `wds/` (the synced default), `<org>/` (the organization's policy, possibly localized; a copy

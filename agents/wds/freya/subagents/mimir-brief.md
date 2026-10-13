@@ -60,7 +60,7 @@ This prevents scope creep in the implementation.
 
 - Spec: `{output_folder}/D-UX-Design/[page-slug].md`
 - Wireframe: `{output_folder}/D-UX-Design/wireframes/[page-slug].png`
-- Design tokens: `{output_folder}/D-UX-Design/design-tokens.md`
+- Design tokens: `brand/design-system/design-tokens.md` (at the level the brand serves, usually the repo root)
 ```
 
 ## Instructions

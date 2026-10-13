@@ -17,11 +17,11 @@ The brief is a suite in `projects/<project>/A-Product-Brief/` (the `output_folde
 | File | When |
 |---|---|
 | `01-product-brief.md` | Always |
-| `02-content-language.md` | Brand voice, tone, language, SEO or content strategy came up |
-| `03-visual-direction.md` | Design style, aesthetics, references, colour or typography came up. A short pointer to the visual identity (`visual-identity/` at the level it serves, see `agents/wds/data/repo-structure.md`), plus what only applies to this project. If the identity exists, read it and discuss only what differs. |
+| `02-content-language.md` | Brand voice, tone, language, SEO or content strategy came up. A short pointer to the tone of voice (`brand/tone-of-voice.md` at the level it serves, see `agents/wds/data/repo-structure.md`), plus what only applies to this project. If the voice exists, read it and discuss only what differs. |
+| `03-visual-direction.md` | Design style, aesthetics, references, colour or typography came up. A short pointer to the visual identity (`brand/visual-identity/`), plus what only applies to this project. If the identity exists, read it and discuss only what differs. |
 | `04-platform-requirements.md` | Something is to be built: platforms, integrations, limits, complexity, knowledge gaps. Strategic boundaries readable by the client, not a technical spec; the master PRD in `E-Development/` comes after it. |
 
-The structure of each document is in [suite-templates.md](references/suite-templates.md).
+The structure of each document is in [suite-templates.md](references/suite-templates.md). When no `brand/` exists yet and the voice or the visual direction is written for the first time, the company-wide part goes into `brand/` and only the project's own part into `02` or `03`.
 
 ## What the brief must cover
 

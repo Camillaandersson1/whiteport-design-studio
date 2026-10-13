@@ -46,9 +46,12 @@ progress/
 ### Strategy (Phase 1)
 The suite is numbered in reading order. The numbers are fixed, and a skipped document leaves its number free.
 - **Product Brief** — `A-Product-Brief/01-product-brief.md`. Strategic foundation: vision, goals, constraints, target users. Required before any design work.
-- **Content Language** — `A-Product-Brief/02-content-language.md`. Tone, vocabulary, brand voice.
+- **Content Language** — `A-Product-Brief/02-content-language.md`. A short pointer to the tone of voice, plus what only applies to this project: language, SEO, content structure.
 - **Visual Direction** — `A-Product-Brief/03-visual-direction.md`. A short pointer to the visual identity, plus what only applies to this project.
-- **Visual Identity** — `visual-identity/` at the level it serves (the repo root, or the client's folder). The brand: direction, mark, pigments, typefaces, tokens, assets, moodboard. Exists once; each project's `D-Design-System/` builds on its tokens.
+- **Brand** — `brand/` at the level it serves (the repo root, or the client's folder). Exists once, in three parts: the visual identity, the tone of voice and the shared design system.
+- **Visual Identity** — `brand/visual-identity/`. The visual direction (`visual-direction.md`), mark, moodboard, assets. Why and how it looks.
+- **Tone of Voice** — `brand/tone-of-voice.md`. What the company believes, how it sounds, its words and storytelling principles.
+- **Shared Design System** — `brand/design-system/`. The tokens (`design-tokens.md`) and the components more than one project uses. A token is changed only here. Each project's thin `D-Design-System/` holds the components only it uses.
 - **Platform Requirements** — `A-Product-Brief/04-platform-requirements.md`. Strategic boundaries for what is built: platforms, integrations, constraints, complexity, knowledge gaps. Not a technical spec. Required before the master PRD.
 
 ### Research (Phase 2)

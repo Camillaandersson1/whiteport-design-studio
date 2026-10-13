@@ -28,7 +28,10 @@ What a WDS workspace contains and the starting content of each file. Used by org
 │   ├── <org>/                    The org's policy. Edited only in its source repo; a copy elsewhere (has .source).
 │   └── <project>/                Optional tightenings for this repo.
 ├── org-profile.md                Shared across projects, at the level it serves (see below)
-├── visual-identity/              The brand: direction, mark, tokens, assets. Exists once.
+├── brand/                        The brand. Exists once.
+│   ├── visual-identity/          Visual direction, mark, moodboard, assets
+│   ├── tone-of-voice.md          What we believe, how we sound, the words
+│   └── design-system/            Tokens and the components more than one project uses
 ├── people/<person>/              The people the work involves
 ├── communication/                Meetings, mail and chats
 ├── contacts.md
@@ -43,7 +46,7 @@ What a WDS workspace contains and the starting content of each file. Used by org
 
 A single-project repo may keep its `output_folder` at the root instead of under `projects/`, for example `design-process/`. `AGENTS.md` says which. Under `projects/` a project never gets a `design-process/` subfolder.
 
-The shared material (org profile to timeline) lives at the level it serves. Here that is the root, because the repo serves one organization. In an agency repo with several clients it goes in the client's folder (`<client>/visual-identity/` and so on), next to that client's projects. A `shared/` folder is a last resort. See `agents/wds/data/repo-structure.md`.
+The shared material (org profile to timeline) lives at the level it serves. Here that is the root, because the repo serves one organization. In an agency repo with several clients it goes in the client's folder (`<client>/brand/` and so on), next to that client's projects. A `shared/` folder is a last resort. See `agents/wds/data/repo-structure.md`.
 
 ---
 
@@ -91,8 +94,9 @@ Run wrap: `agents/wds/skills/wrap.md`.
 ## Rules
 
 - One project = one folder under `projects/`, each a separate WDS structure. `output_folder` is `projects/<project>/`, with the WDS folders directly inside it.
-- What several projects share lives at the level it serves, here the root: `visual-identity/`, `people/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md`. Never copied into projects. A `shared/` folder is a last resort.
-- Each project's `D-Design-System/` builds on the tokens in `visual-identity/`. A token is changed in the identity, never in a project.
+- What several projects share lives at the level it serves, here the root: `brand/`, `people/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md`. Never copied into projects. A `shared/` folder is a last resort.
+- The brand is `brand/visual-identity/`, `brand/tone-of-voice.md` and `brand/design-system/` (tokens and shared components). Each project's `D-Design-System/` holds only the components that project alone uses; when a second project needs one, it moves up to `brand/design-system/`. A token is changed only in `brand/design-system/`.
+- Each project's `02-content-language.md` and `03-visual-direction.md` point to `brand/` and add only what is the project's own.
 - One folder per source in `agents/`. WDS agents are synced from whiteport-design-studio and never edited here.
 - Policy lives in `governance/`, one folder per source: `wds/`, `<org>/` and, optionally, `<project>/`. A folder with a `.source` file is a synced copy and is read-only; edit it in its source repo. `governance/policies.md` lists the files in reading order.
 - Everything in the repo is shared and professional. Private matters go in each person's private cabinet.

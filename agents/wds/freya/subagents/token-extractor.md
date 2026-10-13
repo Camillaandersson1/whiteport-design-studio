@@ -6,7 +6,7 @@ Read the implemented page and extract design tokens. Update the token registry.
 
 - Implemented page (inspect via browser tools or read source)
 - Page spec: `{output_folder}/D-UX-Design/[page-slug].md`
-- Existing registry: `{output_folder}/D-UX-Design/design-tokens.md` (may not exist yet)
+- Existing registry: `brand/design-system/design-tokens.md` at the level the brand serves, usually the repo root (may not exist yet). Tokens are the brand's: a token is changed only there, never in a project.
 
 ## What to extract
 
@@ -20,7 +20,7 @@ Name as: `text-[role]` (e.g., `text-heading-xl`, `text-body`, `text-label-sm`)
 Name as: `space-[N]` or `space-[semantic]` (e.g., `space-4`, `space-section`)
 Flag named layout units (header height, sidebar width, content max-width) as spacing objects.
 
-**Component candidates** — recurring UI patterns seen on this page or across pages. Flag for design system phase, do not extract yet.
+**Component candidates** — recurring UI patterns seen on this page or across pages. Flag for design system phase, do not extract yet. A component only this project uses goes in its `D-Design-System/`; one a second project needs moves up to `brand/design-system/`.
 
 ## Registry update
 
@@ -28,7 +28,7 @@ Read existing `design-tokens.md` if it exists. Add new tokens. Do not remove or 
 
 **Registry format:**
 ```
-# Design Tokens — [Project Name]
+# Design Tokens — [Client or Organisation]
 Last updated: [date] — after [Page name]
 
 ## Colors

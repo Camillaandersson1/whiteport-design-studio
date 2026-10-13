@@ -16,7 +16,7 @@ Takes a new project from "we want to build X" to a project folder Saga can start
 | A workspace exists, a new project | This skill directly (`/idun project`) |
 | The project folder already exists | Show it and its status. Nothing is created. |
 
-The layout follows `agents/wds/data/repo-structure.md`: one project is one folder under `projects/`, a complete WDS structure of its own, and projects never share folders. What several projects share lives at the level it serves: the repo root (`visual-identity/`, `people/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md`), or the client's folder in an agency repo. `shared/` is a last resort.
+The layout follows `agents/wds/data/repo-structure.md`: one project is one folder under `projects/`, a complete WDS structure of its own, and projects never share folders. What several projects share lives at the level it serves: the repo root (`brand/`, `people/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md`), or the client's folder in an agency repo. `shared/` is a last resort.
 
 ---
 
@@ -93,7 +93,7 @@ The layout follows `agents/wds/data/repo-structure.md`: one project is one folde
     2. `projects/[slug]/_progress/wds-project-outline.yaml`: project, repo, org, scope, created, `output_folder`, `code:`, the phases (qualification and onboarding as they stand, the rest `pending`), governance as it stands in the repo, and the team.
     3. `projects/[slug]/_progress/00-design-log.md`, first line: `YYYY-MM-DD · idun · Project set up from the intake. Next: /saga.`
     4. A row in the project table in `AGENTS.md`: name, folder, status.
-    5. Material the project shares with others (visual identity, people, communication, contacts, timeline) stays at the level it serves, not in the project. Point to what is already there. The project's `D-Design-System/` builds on the tokens in `visual-identity/`, and `A-Product-Brief/03-visual-direction.md` is a short pointer to it.
+    5. Material the project shares with others (the brand, people, communication, contacts, timeline) stays at the level it serves, not in the project. Point to what is already there. The project's `D-Design-System/` holds only the components it alone uses; the tokens and shared components are in `brand/design-system/`. `A-Product-Brief/02-content-language.md` points to `brand/tone-of-voice.md` and `03-visual-direction.md` to `brand/visual-identity/`.
     6. If `agents/wds/` is missing: install it with the sync tool, after the person's yes ("Installing in a project" in `agents/wds/README.md`).
 
     Commit: `projects: [slug] set up`, then push.

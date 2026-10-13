@@ -207,6 +207,8 @@ Extracted from the Trigger Map to provide strategic grounding:
 
 **NOT for:** Strategic content (that uses Content Creation Workshop)
 
+**Lives in:** `brand/tone-of-voice.md`, for the whole company. The project's `02-content-language.md` points to it and adds only what is the project's own.
+
 ---
 
 ### 12. Create Product Brief

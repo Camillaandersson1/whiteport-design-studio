@@ -10,10 +10,12 @@ Always write:
 - `{output_folder}/A-Product-Brief/01-product-brief.md`
 
 Write if content & language data was collected:
-- `{output_folder}/A-Product-Brief/02-content-language.md`
+- `{output_folder}/A-Product-Brief/02-content-language.md`, a short pointer to the tone of voice plus what only applies to this project. The voice itself is the company's and goes in `brand/tone-of-voice.md` at the level it serves, usually the repo root (`agents/wds/data/repo-structure.md`). If it exists, update it there.
 
 Write if visual direction data was collected:
-- `{output_folder}/A-Product-Brief/03-visual-direction.md`, a short pointer to the visual identity plus what only applies to this project. The direction itself goes in `visual-identity/visual-direction.md` at the level it serves, usually the repo root (`agents/wds/data/repo-structure.md`). If it exists, update it there.
+- `{output_folder}/A-Product-Brief/03-visual-direction.md`, a short pointer to the visual identity plus what only applies to this project. The direction itself goes in `brand/visual-identity/visual-direction.md` at the level it serves, usually the repo root. If it exists, update it there.
+
+When no `brand/` exists yet and you write the voice or the visual direction for the first time, write the company-wide part into `brand/` and only the project's own part into the project file.
 
 Write if platform requirements data was collected:
 - `{output_folder}/A-Product-Brief/04-platform-requirements.md`
@@ -57,11 +59,23 @@ Write if platform requirements data was collected:
 ```
 # Content & Language — [Project Name]
 
-## Brand Personality
-## Tone of Voice
+[One paragraph: the voice is the company's, so it lives in brand/tone-of-voice.md. This page adds only what is the project's own.]
+
 ## Language Strategy
 ## SEO Keywords
 ## Content Structure
+```
+
+`brand/tone-of-voice.md` structure:
+
+```
+# Tone of Voice — [Client or Organisation]
+
+## What We Believe
+## Brand Personality
+## How We Sound
+## Words We Use
+## How We Tell the Story
 ```
 
 ## 03-visual-direction.md structure
@@ -69,13 +83,13 @@ Write if platform requirements data was collected:
 ```
 # Visual Direction — [Project Name]
 
-[One paragraph: the visual direction is shared by every project, so it lives in visual-identity/visual-direction.md, with the tokens, moodboard, mark and assets beside it. This project's components are in D-Design-System/.]
+[One paragraph: the visual direction is shared by every project, so it lives in brand/visual-identity/visual-direction.md, with the moodboard, mark and assets beside it, and the tokens in brand/design-system/. This project's own components are in D-Design-System/.]
 
 ## Only for this project
 [What applies to this project alone, if anything]
 ```
 
-`visual-identity/visual-direction.md` structure:
+`brand/visual-identity/visual-direction.md` structure:
 
 ```
 # Visual Direction — [Client or Organisation]

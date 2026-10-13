@@ -17,7 +17,7 @@ Not for wireframes. They stay deliberately rough, so that the conversation is ab
 ## Order of authority
 
 1. **The spec and the approved wireframe.** What the page must do and contain.
-2. **The project's own design:** the design system, `A-Product-Brief/03-visual-direction.md` and the client's visual identity (`visual-identity/` at the level it serves, for example the repo root).
+2. **The project's own design:** the design system (`brand/design-system/` and the project's `D-Design-System/`), `A-Product-Brief/03-visual-direction.md` and the client's visual identity (`brand/visual-identity/` at the level it serves, for example the repo root).
 3. **Taste** for everything the first two leave open, and as the check against generic patterns.
 
 When Taste disagrees with 1 or 2, the project wins. A Taste rule that seems to fit better is a proposal to the person, not a change made on the agent's own.

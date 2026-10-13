@@ -227,7 +227,7 @@ Features (WHAT): 10K templates, smart pricing, e-signatures
 - Error messages: "Please enter a valid email"
 - Success messages: "Profile updated!"
 
-**Defined once** in Product Brief, applied everywhere.
+**Defined once** in the brand (`brand/tone-of-voice.md`, at the level it serves), applied everywhere. The project's `02-content-language.md` adds only what is its own.
 
 ---
 
