@@ -64,10 +64,16 @@ Language: <language for client-facing material>. All folder and file names in lo
 ## At session start
 
 1. Note the start time (`YYYY-MM-DD_HH-MM`, local time). The session id is `YYYY-MM-DD_HH-MM-<user>`.
-2. Find out who you work with: read `.wds/me.md`. If missing, follow `agents/wds/tools/git.md`.
-3. Read `governance/policies.md` and follow the policy files in that order: the WDS default, then the organization's, then this repo's (see "Step: governance" in `agents/wds/data/shared-activation.md`).
+2. Find out who you work with: read `.wds/me.md` (if missing, follow `agents/wds/tools/git.md`), then the soul files in `users/<user>/` and in the private cabinet that `private:` points to, and let them shape the work.
+3. Read `governance/policies.md` and follow the policy files in that order: the WDS default, then the organization's, then this repo's (see "Which policy applies" in `agents/wds/data/session.md`).
 4. Read the latest handover to you in `sessions/<user>/<agent>/` and open ones in `sessions/all-users/<agent>/`.
 5. Work inside one project folder at a time.
+
+The full start is in `agents/wds/data/session.md`.
+
+## During the session
+
+When the person corrects you or states a preference, follow it at once, and write what will last in the file where it belongs (`agents/wds/data/session.md`, During the session).
 
 ## At session end
 

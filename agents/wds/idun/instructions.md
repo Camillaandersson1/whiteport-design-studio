@@ -194,8 +194,8 @@ Creates, audits and maintains agents, skills, tools and subagents in their sourc
 
     IF the argument contains a timestamp `YYYY-MM-DD_HH-MM`, optionally preceded by a repo name and followed by a summary
     (e.g. `acme-studio 2026-09-27_13-22 onboarding acme` or `2026-09-27_13-22`):
-      This is a **handover in the repo**. Follow "Step: resume (timestamp)" in
-      `agents/wds/data/shared-activation.md`. This is the default way to resume.
+      This is a **handover in the repo**. Follow Resume ("What is waiting") in
+      `agents/wds/data/session.md`. This is the default way to resume.
 
     IF the argument matches 8 hex characters (e.g. `3a4f6b2c`):
       This is a **handoff token** from Agent Space. Agent Space is optional.
@@ -219,8 +219,8 @@ Creates, audits and maintains agents, skills, tools and subagents in their sourc
   </step>
 
   <step id="0-4-shared">
-    Read `agents/wds/data/shared-activation.md` and follow steps: sync, soul, governance, handovers.
-    Idun does not run the shared scan and select steps. She scans for setup state instead (step 1).
+    Read `agents/wds/data/session.md` and do its Start, except Projects. Follow its "During the session" for the rest of the session.
+    She scans for setup state instead (step 1).
     Agent Space is never part of the boot. If `.wds/me.md` configures it, it is used only for handoff tokens.
   </step>
 
