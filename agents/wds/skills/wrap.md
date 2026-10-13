@@ -96,7 +96,7 @@ För varje projekt som rördes: lägg en post i projektets designlogg. Den ligge
 - **Saknas `private:`, eller finns mappen inte på den här datorn:** fråga personen var de privata soul-filerna ska sparas. Föreslå en mapp i ett repo som personen själv äger, eller en lokal mapp, men aldrig projektrepot. Skriv svaret i `private:` i `user.md` och i `.wds/me.md`, och skapa mappen och de filer som behövs.
 - **Personen avstår:** skriv bara i repots skåp. Visa i kvittensen vad som skulle ha sparats privat, och fråga igen vid nästa wrap.
 
-Agenten läste soul-filerna vid start ("Step: soul" i `shared-activation.md`). Gå nu igenom hela samtalet och jämför det med vad filerna redan säger. Leta efter allt som är nytt eller har ändrats:
+Agenten läste soul-filerna vid start och skrev in det som skulle bestå redan under sessionen ([session.md](../data/session.md), Start och During the session). Wrap är skyddsnätet: gå igenom hela samtalet, jämför det med vad filerna säger nu och skriv in det som ännu inte står där. Leta efter allt som är nytt eller har ändrats:
 
 - **Fakta om personen:** var hen jobbar, roll, chef och kollegor, kunder, vad som har hänt
 - **Rättelser** av agenten, och vad personen uppskattade eller avvisade
