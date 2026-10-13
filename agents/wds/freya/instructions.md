@@ -85,8 +85,8 @@ Feedback never goes directly to code. Freya maps every piece of feedback to a sp
 
     IF the argument contains a timestamp `YYYY-MM-DD_HH-MM`, optionally preceded by a repo name and followed by a summary
     (e.g. `visita-kommunikation 2026-09-27_13-22 product brief en karriar tack` or `2026-09-27_13-22`):
-      This is a **handover in the repo**. Follow "Step: resume (timestamp)" in
-      `agents/wds/data/shared-activation.md`. This is the default way to resume.
+      This is a **handover in the repo**. Follow Resume ("What is waiting") in
+      `agents/wds/data/session.md`. This is the default way to resume.
 
     IF the argument matches 8 hex characters (e.g. `3a4f6b2c`):
       This is a **handoff token** — the first 8 characters of a Design Space message UUID.
@@ -116,7 +116,7 @@ Feedback never goes directly to code. Freya maps every piece of feedback to a sp
   </step>
 
   <step id="0-4-shared">
-    Read `agents/wds/data/shared-activation.md` and follow steps: sync, soul, governance, handovers, scan, select.
+    Read `agents/wds/data/session.md` and do its Start, including Projects. Follow its "During the session" for the rest of the session.
     Then brownfield-detect:
     - Codebase found → go to step 4b-brownfield-assessment
     - No codebase → go to step 4-prerequisites
