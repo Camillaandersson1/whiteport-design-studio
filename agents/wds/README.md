@@ -10,7 +10,7 @@ agents/wds/
 ├── mimir/     Implementation: tech audit, PRD, build
 ├── skills/    every skill: product-brief, trigger-map, ux-design, build, wrap, handoff, feedback, install-wds …
 ├── tools/     every tool: git, github, machine, sync, wireframe, rendering …
-├── data/      shared activation, glossary, repo structure, design system, presentations
+├── data/      the session (session.md), glossary, repo structure, design system, presentations
 │   └── templates/   governance/: the WDS default policy · policies.md: the reading list
 └── adapters/  the command files the sync writes into each repo's root
 ```
@@ -19,11 +19,13 @@ agents/wds/
 
 | Path | What |
 |---|---|
-| `instructions.md` | WHO: identity, tone, activation, routing |
+| `instructions.md` | WHO: identity, tone, method, what it produces, where to begin, who it hands over to. Short: the method lives in the skills |
 | `subagents/` | Focused writers and reviewers the agent delegates to |
 | `references/` | Method guides loaded when a step needs them |
 
 Skills, tools and data belong to the source, not to an agent. **Every agent can use every skill.** A skill's `used_by:` says which agents usually run it, so an agent knows its core work and the catalog shows who uses what. It is a description, never a permission. A skill without `used_by:` is for anyone. The same layout applies to every source: a project's own source (`agents/<org>/`) has its agents, `skills/`, `tools/` and `data/` the same way, and all of them are available to every agent in the repo.
+
+**Every session builds on the last.** All agents work as [data/session.md](data/session.md) describes: they start from the person's soul files and the latest handover, write down what they learn while they work, and end with a wrap that hands over. The memory is the files, so any agent in any tool can continue.
 
 **Roles:** Idun installs WDS and gets people started, looks after WDS at each client (structure, sync, governance and compliance, and the conversations about the process) and keeps the WDS method and the skill library. Saga, Freya and Mimir build and analyse. Content and communication agents belong to the project (for example `agents/visita/vinka/`), not to WDS.
 
@@ -44,12 +46,13 @@ This principle applies to every skill in every project and initiative, not only 
 - **Every skill and tool has exactly one source repo.** Local copies are never edited.
 - **Visual quality comes from Taste.** Every agent that renders design or writes frontend code follows [data/taste.md](data/taste.md): the project's own design first, Taste for the rest.
 - **External sources go through WDS.** A skill library from outside, like [Taste](../taste/source.md), is copied unchanged into its own folder, `agents/<source>/`, with its license and a `source.md` that names the origin, the commit and how it was reviewed. An update is a reviewed diff, never a direct pull. The sync spreads it to every WDS repo like `agents/wds/`.
+- **A skill is a folder** in the open Agent Skills format: `skills/<name>/SKILL.md`, with `references/` (loaded when a part of the work needs them) and `scripts/` beside it. The description says what the skill does and when to use it. The skill states the goal, the quality bar and what is particular to WDS, not a script of steps: exact steps belong only where the work is fragile, and then in a tool. Skills still written as a single `skills/<name>.md` are moved to the folder format one at a time.
 - **Applied as you go.** When a session touches a skill or tool, the agent checks that `tools:` and `used_by:` match and fixes them (wrap step 5).
 
 ```markdown
 ---                                   ---
 name: <skill>                         name: <tool>
-description: One sentence.            description: One sentence.
+description: What it does, and when.   description: One sentence.
 used_by: [<agent>, <agent>]           type: http | cli | script
 tools: [<source>/<tool>]              used_by: [<skill>, <skill>]
 ---                                   ---
@@ -74,7 +77,7 @@ A repo where governance is set up has a folder `governance/` at its root, with o
 | `governance/<project>/` | Optional tightenings for one repo | Here |
 | `governance/policies.md` | The policy files in reading order: wds, then org, then project | Here. Idun creates it at setup. |
 
-A synced folder is a mirror of its source, and its `.source` file (`source: <repo>@<sha>`) shows the version. A folder with `.source` is never edited. Precedence: WDS default < organization < project. A lower level may tighten a rule, never loosen it, and the stricter rule wins. Every agent reads `governance/policies.md` at session start and follows the files in that order ([data/shared-activation.md](data/shared-activation.md), Step: governance). A repo without `governance/` has no governance set up, and agents continue without it. How the copies are made: [tools/sync.md](tools/sync.md). How Idun tailors the policy: [skills/governance-report.md](skills/governance-report.md).
+A synced folder is a mirror of its source, and its `.source` file (`source: <repo>@<sha>`) shows the version. A folder with `.source` is never edited. Precedence: WDS default < organization < project. A lower level may tighten a rule, never loosen it, and the stricter rule wins. Every agent reads `governance/policies.md` at session start and follows the files in that order ([data/session.md](data/session.md), Which policy applies). A repo without `governance/` has no governance set up, and agents continue without it. How the copies are made: [tools/sync.md](tools/sync.md). How Idun tailors the policy: [skills/governance-report.md](skills/governance-report.md).
 
 How a WDS repo is laid out, folders with one owner each, is described in [data/repo-structure.md](data/repo-structure.md).
 
