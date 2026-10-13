@@ -52,7 +52,7 @@ Ett långt möte blir användbart först när det är dokumenterat, och ett pås
        | Öppna frågor | det som lämnades utan svar |
        | Förlopp | en kort rad per avsnitt av mötet, med tidpunkt |
 
-    2. **Faktakolla** påståenden som spelar roll för beslut: siffror, datum, namn, påståenden om företag och personer, tekniska och juridiska påståenden. Sök först i repot (brief, tidigare möten, `shared/<org>/`), sedan på webben. Status är *bekräftat*, *motsägs* eller *inte verifierat*, alltid med källa.
+    2. **Faktakolla** påståenden som spelar roll för beslut: siffror, datum, namn, påståenden om företag och personer, tekniska och juridiska påståenden. Sök först i repot (brief, tidigare möten, `communication/`, `people/`, `timeline.md` på den nivå de gäller), sedan på webben. Status är *bekräftat*, *motsägs* eller *inte verifierat*, alltid med källa.
     3. **Säg till i chatten** bara när ett påstående motsägs av en källa och det påverkar det som diskuteras, eller när någon i mötet riktar en fråga till agenten. En eller två rader.
     4. **När bevakningen löper ut,** starta den igen med samma kommando. Inget går förlorat.
   </step>

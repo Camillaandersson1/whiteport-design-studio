@@ -108,7 +108,7 @@ Turns the confirmed scope into a working WDS repo: `AGENTS.md`, the project fold
 | `AGENTS.md` + agent adapters | Always |
 | `projects/<project>/` with the WDS folders and `_progress/wds-project-outline.yaml` | Always |
 | `users/_template/`, `users/<user>/` | Always |
-| `shared/<org>/org-profile.md` | Team and enterprise |
+| `org-profile.md` at the level it serves (the repo root, or `<client>/` in an agency repo) | Team and enterprise |
 | `governance/<org>/` and `governance/policies.md`, lean or standard | Team and enterprise, when governance is wanted |
 
 ---
@@ -232,8 +232,10 @@ Creates, audits and maintains agents, skills, tools and subagents in their sourc
     - **Projects:** `projects/*/` (older repos: `projects/*/design-process/`) or another `output_folder`, each with `_progress/wds-project-outline.yaml`
       (its `phases:` block records qualification and onboarding).
     - **People:** `users/_template/`, `users/<user>/` for each person, `.wds/me.md` on this machine, `.wds/` in `.gitignore`.
-    - **Organization:** `shared/<org>/org-profile.md`, and the policy in `governance/` at the repo root: `policies.md`
-      (the reading order), `wds/` (the synced default), `<org>/` (the organization's policy, possibly localized; a copy
+    - **Organization:** `org-profile.md` and the shared material (`visual-identity/`, `people/`, `communication/`,
+      `contacts.md`, `timeline.md`) at the level it serves: the repo root, or `<client>/` in an agency repo.
+      Older setups keep them in `shared/<org>/`; offer to move them to the level they serve.
+      Then the policy in `governance/` at the repo root: `policies.md` (the reading order), `wds/` (the synced default), `<org>/` (the organization's policy, possibly localized; a copy
       if it has a `.source` file, the source if not) and `<project>/` (tightenings). Note the version in each `.source`.
       Older setups may have flat prefixes (`governance/wds-*.md`, `governance/<org>-*.md`), `shared/<org>/governance/`,
       `ai-governance/` or an `<org>-agent-space` repo named in `AGENTS.md`; offer to move them into folders

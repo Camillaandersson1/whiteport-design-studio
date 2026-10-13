@@ -46,7 +46,7 @@ The Product Brief is a suite of documents. The core document is always produced.
 |---|---|
 | `01-product-brief.md` | Always |
 | `02-content-language.md` | When tone, brand voice, SEO, or language strategy are in scope |
-| `03-visual-direction.md` | When visual style, brand aesthetics, or design direction are in scope |
+| `03-visual-direction.md` | When visual style, brand aesthetics, or design direction are in scope. A short pointer to the visual identity (`visual-identity/` at the level it serves), plus what only applies to this project. |
 | `04-platform-requirements.md` | When the project builds something: platforms, integrations, constraints, complexity and knowledge gaps. Strategic boundaries, not a technical spec. The master PRD in `E-Development/` is written after it. |
 
 ---

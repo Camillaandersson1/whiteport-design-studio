@@ -47,7 +47,8 @@ progress/
 The suite is numbered in reading order. The numbers are fixed, and a skipped document leaves its number free.
 - **Product Brief** — `A-Product-Brief/01-product-brief.md`. Strategic foundation: vision, goals, constraints, target users. Required before any design work.
 - **Content Language** — `A-Product-Brief/02-content-language.md`. Tone, vocabulary, brand voice.
-- **Visual Direction** — `A-Product-Brief/03-visual-direction.md`. Aesthetic references, colour, typography intent.
+- **Visual Direction** — `A-Product-Brief/03-visual-direction.md`. A short pointer to the visual identity, plus what only applies to this project.
+- **Visual Identity** — `visual-identity/` at the level it serves (the repo root, or the client's folder). The brand: direction, mark, pigments, typefaces, tokens, assets, moodboard. Exists once; each project's `D-Design-System/` builds on its tokens.
 - **Platform Requirements** — `A-Product-Brief/04-platform-requirements.md`. Strategic boundaries for what is built: platforms, integrations, constraints, complexity, knowledge gaps. Not a technical spec. Required before the master PRD.
 
 ### Research (Phase 2)

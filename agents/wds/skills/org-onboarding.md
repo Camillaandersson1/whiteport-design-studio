@@ -39,7 +39,7 @@ Takes Idun from a confirmed scope to a repo where people can start working with 
 
     Read the room on depth. A two-person studio needs five sentences. A department needs a page.
 
-    **Deliverable:** `shared/<org>/org-profile.md`, written once the workspace exists in step 3.
+    **Deliverable:** `org-profile.md` at the repo root (the client's folder in an agency repo), written once the workspace exists in step 3.
     **Gate:** the person confirms the profile is accurate.
   </step>
 
@@ -64,7 +64,8 @@ Takes Idun from a confirmed scope to a repo where people can start working with 
        (intake, where the code lives, `projects/<project>/` with the WDS folders, its outline and design log directly inside).
        Run its steps 2–4 for each project. The handover to Saga is written once, in step 8.
     4. **People.** `users/_template/`, `users/README.md`, `sessions/`, and `.wds/` in `.gitignore`.
-    5. **Shared org material.** `shared/<org>/` with the org profile from step 1. Org scope only.
+    5. **Shared org material.** The org profile from step 1, at the level it serves: the repo root, or `<client>/` in an agency repo.
+       Visual identity, people, communication, contacts and timeline go at the same level when they come up. Org scope only. `shared/` is a last resort.
     6. **Agents.** Install the WDS agents and their adapters as described in "Installing in a project" in
        `agents/wds/README.md`, using the sync tool. Never copy them by hand.
 
@@ -99,8 +100,10 @@ Takes Idun from a confirmed scope to a repo where people can start working with 
     **Full suite (10+ people, external stakeholders, regulated):** do not tailor the lean set here. Run `governance-report.md`, which owns the full dialog.
 
     Also write, for lean and standard:
-    - `shared/<org>/access-audit/people-access-map.md` — every person, their role, what they can access
-    - `shared/<org>/access-audit/repo-access-map.md` — every repo and who has access (GitHub tool reads the facts)
+    - `access-audit/people-access-map.md` — every person, their role, what they can access
+    - `access-audit/repo-access-map.md` — every repo and who has access (GitHub tool reads the facts)
+
+    Both at the same level as the org profile.
 
     **Gate:** the client's principal has read and approved `<org>/framework.md` at an agreed milestone, and its
     `Status:` line says so (`approved v<version> <date>, <role>`). Until then the status is `in progress`.

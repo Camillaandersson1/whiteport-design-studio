@@ -13,7 +13,7 @@ Write if content & language data was collected:
 - `{output_folder}/A-Product-Brief/02-content-language.md`
 
 Write if visual direction data was collected:
-- `{output_folder}/A-Product-Brief/03-visual-direction.md`
+- `{output_folder}/A-Product-Brief/03-visual-direction.md`, a short pointer to the visual identity plus what only applies to this project. The direction itself goes in `visual-identity/visual-direction.md` at the level it serves, usually the repo root (`agents/wds/data/repo-structure.md`). If it exists, update it there.
 
 Write if platform requirements data was collected:
 - `{output_folder}/A-Product-Brief/04-platform-requirements.md`
@@ -68,6 +68,17 @@ Write if platform requirements data was collected:
 
 ```
 # Visual Direction — [Project Name]
+
+[One paragraph: the visual direction is shared by every project, so it lives in visual-identity/visual-direction.md, with the tokens, moodboard, mark and assets beside it. This project's components are in D-Design-System/.]
+
+## Only for this project
+[What applies to this project alone, if anything]
+```
+
+`visual-identity/visual-direction.md` structure:
+
+```
+# Visual Direction — [Client or Organisation]
 
 ## Visual References
 ## Design Style

@@ -14,11 +14,27 @@ Roten består av mappar som går att droppa in. Varje toppmapp är en *sorts* sa
 | `users/` | personen | `users/martenangner/` |
 | `sessions/` | personen och agenten | `sessions/martenangner/saga/` |
 
+Bredvid dem ligger innehållet som delas mellan projekten, på den nivå det gäller: `visual-identity/`, `people/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md`. Se [Delat material](#delat-material).
+
 Tre regler:
 
 1. **En mapp har en ägare.** Den byts ut som en helhet och kan droppas in i ett annat repo.
 2. **Synken kopierar mappar, inte filer.** Den äger en synkad mapp helt och får därför också ta bort det som försvunnit i källan.
 3. **Man läser genom en platt vy**, inte genom mappträdet: `AGENTS.md`, policylistan i `governance/` och planens vyer. Lagringen följer ägaren, och vyn visar allt längs den dimension man behöver.
+
+## Delat material
+
+**Bestämt (Mårten, 2026-10-13).** Det som delas mellan projekt ligger på den nivå det gäller, aldrig inne i ett projekt och aldrig i en generisk `shared/`-mapp.
+
+| Repot | Nivån | Exempel |
+|---|---|---|
+| Tillhör en kund eller organisation | roten | `visual-identity/`, `people/<person>/`, `communication/`, `contacts.md`, `timeline.md`, `org-profile.md` |
+| En byrås repo med flera kunder | kundens mapp, bredvid kundens projekt | `<kund>/visual-identity/` |
+
+- En mapp som heter `shared/` är en sista utväg, när inget annat fungerar. Äldre repon har ofta `shared/<org>/`. Läs det som finns där och föreslå att flytta det till rätt nivå.
+- **Visuell identitet och designsystem är två saker.** Den visuella identiteten är varumärket: riktning, märke, pigment, typsnitt, tokens, tillgångar och moodboard. Den finns en gång, på den nivå den gäller. Ett designsystem är komponenterna som använder identiteten i ett medium. Varje projekt har sitt eget `D-Design-System/`, byggt på identitetens tokens. En token ändras i identiteten, aldrig i ett projekt.
+- I produktbriefen är `A-Product-Brief/03-visual-direction.md` en kort pekare till den visuella identiteten, plus det som bara gäller projektet.
+- Referens: welqora-analysis, se regeln i dess `AGENTS.md` och rotmapparna `visual-identity/`, `people/`, `communication/` och `timeline.md`.
 
 ## En källa inne i `agents/`
 

@@ -205,6 +205,8 @@ Produces the Product Brief document suite through structured discovery conversat
   <step id="visual-direction-discovery">
     Load `../saga/references/inspiration-analysis.md`.
 
+    The visual identity lives once, at the level it serves (`visual-identity/`, see `../data/repo-structure.md`). If it exists, read it and discuss only what differs for this project. The project's `03-visual-direction.md` is a short pointer to it.
+
     <category id="visual-references">
       Goal: Concrete visual references — sites, brands, images the user responds to.
       Opening: "Show me or name something that looks the way you want this to feel — doesn't have to be in your industry."

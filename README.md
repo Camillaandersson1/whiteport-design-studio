@@ -69,7 +69,7 @@ Repo first, then the session's start time. Anyone on the team can paste it — i
 
 ### One repo, many projects
 
-Each project under `projects/` is a **completely separate WDS structure** with its own design log. Material shared across projects (brand, tone of voice, contacts) goes in `shared/`.
+Each project under `projects/` is a **completely separate WDS structure** with its own design log. Material shared across projects (visual identity, people, communication, contacts, timeline) lives at the level it serves: the repo root when the repo belongs to one client, the client's folder in an agency repo. Each project keeps its own design system, built on the shared visual identity.
 
 ### Agent-neutral
 
