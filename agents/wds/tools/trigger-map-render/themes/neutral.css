@@ -1,0 +1,19 @@
+/* WDS neutral theme: the default look of every rendered artefact until the client's
+   visual identity supplies its own. A client overrides any of these roles in
+   visual-identity/tokens.css. Keep this quiet: one ink, one accent, hairlines. */
+:root {
+  --wds-paper: #FFFFFF;
+  --wds-surface: #F6F6F4;
+  --wds-ink: #1B1C1E;
+  --wds-ink-2: #55585D;
+  --wds-ink-3: #74777C;
+  --wds-line: #DEDFE0;
+  --wds-accent: #3D5A73;
+  --wds-accent-ink: #2F4A61;
+  --wds-positive: #2F6B52;
+  --wds-negative: #9A4A3C;
+  --wds-font-display: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --wds-font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --wds-font-mono: "Cascadia Mono", Consolas, "SFMono-Regular", monospace;
+  --wds-radius: 6px;
+}
