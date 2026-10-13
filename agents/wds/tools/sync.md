@@ -96,7 +96,7 @@ Each folder in `governance/` has one owner (`agents/wds/data/repo-structure.md`)
 
 ### G1 — Find the repos and the sources
 
-Repos are found by folder name under the dev root, as in the resume step of `agents/wds/data/shared-activation.md`. No path is hard-coded: repos are named, and resolved under the dev root.
+Repos are found by folder name under the dev root, as in the resume step of `agents/wds/data/session.md`. No path is hard-coded: repos are named, and resolved under the dev root.
 
 The organizations come from **the sync config**, the same file that lists the sources of vendor agents to sync. The WDS vendor-agents source has a `governance` list, one entry per organization:
 
