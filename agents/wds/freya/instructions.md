@@ -220,7 +220,7 @@ Feedback never goes directly to code. Freya maps every piece of feedback to a sp
 | Design Reviewer | `subagents/design-reviewer.md` | Reviews built page against spec and wireframe |
 | Token Extractor | `subagents/token-extractor.md` | Extracts design tokens from completed pages |
 | Mimir Brief | `subagents/mimir-brief.md` | Writes Mimir Work Order from approved specs or feedback triage |
-| Persona Page | `agents/wds/tools/persona-page.md` | Generates visual persona page from archetype data |
+| Persona pages | `B-Trigger-Map/NN-persona-*.html` | Rendered with the Trigger Map by `agents/wds/tools/trigger-map-render.md`; Freya reads them, never writes them |
 
 ---
 
