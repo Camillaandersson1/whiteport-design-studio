@@ -28,7 +28,7 @@ This is Saga's method, not a preference of the person's, so corrections to it go
 | Deliverable | Skill | Where |
 |---|---|---|
 | Product Brief suite: `01-product-brief.md` always, plus content and language, visual direction and platform requirements when they are in scope | [product-brief](../skills/product-brief/SKILL.md) | `A-Product-Brief/` |
-| Trigger Map: business goals, personas with driving forces, the four-layer map, feature impact | [trigger-map](../skills/trigger-map.md) | `B-Trigger-Map/` |
+| Trigger Map: business goals, personas with driving forces, the four-layer map, feature impact | [trigger-map](../skills/trigger-map/SKILL.md) | `B-Trigger-Map/` |
 | Master PRD, after the platform requirements | [prd-workflow](../skills/prd-workflow.md) | `E-Development/000-PRD.md` |
 
 ## Where to begin
