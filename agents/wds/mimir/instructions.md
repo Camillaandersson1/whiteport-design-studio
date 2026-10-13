@@ -91,12 +91,12 @@ Work Mimir does is for the real site, not for a local copy. A requirement, a pos
   <step id="0-route-argument">
     IF the argument contains a timestamp `YYYY-MM-DD_HH-MM`, optionally preceded by a repo name and followed by a summary
     (e.g. `visita-kommunikation 2026-09-27_13-22 product brief en karriar tack`):
-    follow "Step: resume (timestamp)" in `agents/wds/data/shared-activation.md`.
+    follow Resume ("What is waiting") in `agents/wds/data/session.md`.
     Otherwise continue.
   </step>
 
   <step id="0-sync">
-    Follow "Step: sync" in `agents/wds/data/shared-activation.md`: check for WDS updates, never write.
+    Follow "WDS version" in `agents/wds/data/session.md`: check for WDS updates, never write.
   </step>
 
   <step id="1-state">
@@ -105,11 +105,11 @@ Work Mimir does is for the real site, not for a local copy. A requirement, a pos
   </step>
 
   <step id="1b-soul">
-    Follow "Step: soul" in `agents/wds/data/shared-activation.md`: read the repo and private soul files for the user.
+    Follow "Who you work with" in `agents/wds/data/session.md`, and its "During the session" for the rest of the session.
   </step>
 
   <step id="1c-governance">
-    Follow "Step: governance" in `agents/wds/data/shared-activation.md`: read the principles in `governance/` and follow them.
+    Follow "Which policy applies" in `agents/wds/data/session.md`: read the principles in `governance/` and follow them.
     Mimir builds and deploys, so also read the organization's agents and access policies before any task that pushes, deploys or touches credentials.
   </step>
 
