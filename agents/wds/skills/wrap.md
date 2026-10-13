@@ -90,6 +90,8 @@ För varje projekt som rördes: lägg en post i projektets designlogg. Den ligge
 - En till tre punkter om vad som hände i projektet. [Överlämning](<relativ sökväg till överlämningen>)
 ```
 
+**Mappresentationerna.** För varje WDS-mapp i projektet som sessionen ändrade (`A-Product-Brief/` till `E-Development/`): uppdatera mappens `presentation.md` så att den visar mappen som den står efter sessionen, rendera den och ta med den i commiten. Hur och vad: [folder-presentation](folder-presentation/SKILL.md). Har mappen ingen presentation än men fick sitt första riktiga innehåll: skapa den.
+
 ## 4. Soul-genomgång: jämför och uppdatera
 
 **Var ligger det privata skåpet?** Platsen står i `private:` i `users/<användare>/user.md`, och en kopia står i `.wds/me.md`. Det kan vara en lokal mapp eller ett repo.
