@@ -1,6 +1,6 @@
-# Agent: Brief Writer
+# Product Brief suite: the documents and their structure
 
-Write the Product Brief document suite from the discovery data Saga has collected.
+What each document in the suite contains. Read it when you write or update a document.
 
 ## What to write
 

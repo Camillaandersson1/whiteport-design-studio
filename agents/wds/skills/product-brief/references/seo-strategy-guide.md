@@ -384,7 +384,7 @@ Pattern: `example.com/{slug}` (SE), `example.com/en/{slug}` (EN), `example.com/d
 
 - **Meta Content Guide:** `../freya/meta-content-guide.md` — Page-level meta content specification
 - **Content Language Template:** `../../templates/1-project-brief/content-language.template.md`
-- **Platform Requirements:** `../subagents/brief-writer.md` (04-platform-requirements.md structure)
+- **Platform Requirements:** `suite-templates.md` (04-platform-requirements.md structure)
 
 ---
 
