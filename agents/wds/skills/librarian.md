@@ -198,9 +198,9 @@ The rules are in `agents/wds/README.md` (Skills and tools). The checklists are i
 
   <step id="create-skill-4-write">
     Show the files, then write:
-    - `agents/<source>/skills/<name>.md` with frontmatter `name`, `description`, `used_by: [<agent>, …]`, `version: 1.0`, `tools:` and a `<workflow>` with `<constraints>` and `<step>` elements.
-    - Subagents and references alongside, if any.
-    - Add the skill to the agent's `../idun/instructions.md` (skills and routing).
+    - `agents/<source>/skills/<name>/SKILL.md` with frontmatter `name`, `description` (what it does and when to use it), `used_by: [<agent>, …]`, `version: 1.0` and `tools:`. The body states the goal, what done looks like and what is particular to the method; exact steps only where the work is fragile, and those go in a tool. See `agents/wds/README.md` (Skills and tools).
+    - `references/` beside it for what only part of the work needs, one level deep.
+    - Add the skill to "What you produce" in the agent's `instructions.md` if the agent's core work changes.
     - Add the skill's name to `used_by:` in each tool it uses.
     - If the person invokes it directly: an adapter in each of `.claude/commands/`, `.github/prompts/` and `.agents/skills/` (for WDS, in `agents/wds/adapters/`).
 
