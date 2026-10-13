@@ -7,8 +7,8 @@ Part of WDS (agents/wds/tools/trigger-map-render.md).
     python render.py <B-Trigger-Map folder> --theme <css>   # a specific theme instead of the visual identity
     python render.py import <B-Trigger-Map folder>          # existing WDS documents -> trigger-map.yaml
 
-The look comes from themes/neutral.css, overridden by the nearest visual-identity/tokens.css
-above the folder (the project, then each level up to the repo root).
+The look comes from agents/wds/tools/theme: neutral.css, overridden by the brand's tokens.css
+(brand/design-system/tokens.css, nearest level above the folder).
 Requires: PyYAML.
 """
 
@@ -25,7 +25,8 @@ import yaml
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
 
 HERE = Path(__file__).parent
-IMPORT = r"""@import\s+(?:url\([^)]*\)|"[^"]*"|'[^']*')[^;]*;"""  # a font URL may itself contain ";"
+sys.path.insert(0, str(HERE.parent / "theme"))
+from theme import Theme  # noqa: E402  the shared look, agents/wds/tools/theme
 GENERATED = "<!-- Generated from trigger-map.yaml by agents/wds/tools/trigger-map-render. Edit the yaml and render again. -->"
 PRIORITY = {
     "primary": ("Primary", "👥"),
@@ -241,37 +242,6 @@ def md_features(d):
     return o + footer(d, "the persona files")
 
 
-# ── theme ───────────────────────────────────────────────────────────────
-
-def find_tokens(folder):
-    for level in [folder, *folder.parents]:
-        t = level / "visual-identity" / "tokens.css"
-        if t.exists():
-            return t
-        if (level / ".git").exists():
-            return None
-    return None
-
-
-def theme(folder, override=None):
-    files = [HERE / "themes" / "neutral.css"]
-    tokens = Path(override) if override else find_tokens(folder)
-    if tokens:
-        files.append(tokens)
-    css = "\n".join(f.read_text(encoding="utf-8") for f in files)
-    props = dict(re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", css))
-
-    def resolve(v, depth=0):
-        if depth > 10:
-            return v
-        return re.sub(r"var\((--[\w-]+)(?:\s*,\s*([^)]+))?\)",
-                      lambda m: resolve(props.get(m.group(1), m.group(2) or ""), depth + 1), v).strip()
-
-    values = {k: resolve(v) for k, v in props.items() if k.startswith("--wds-")}
-    imports = "\n".join(re.findall(IMPORT, css))
-    return values, imports, css, tokens
-
-
 # ── svg poster ──────────────────────────────────────────────────────────
 
 FS, LH, CW = 13, 17, 7.1  # font size, line height, average character width of the body font
@@ -440,13 +410,11 @@ footer{margin-top:64px;font-size:13px;color:var(--wds-ink-3)}
 """
 
 
-def page(title, imports, css, body):
+def page(title, th, body):
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(title)}</title>
-<style>{imports}
-{re.sub(IMPORT, "", css)}
-{PAGE_CSS}</style></head>
+{th.style(PAGE_CSS)}</head>
 <body><main>
 {body}
 <footer>Generated from trigger-map.yaml by agents/wds/tools/trigger-map-render.</footer>
@@ -454,7 +422,7 @@ def page(title, imports, css, body):
 """
 
 
-def html_map(d, svg, imports, css):
+def html_map(d, svg, th):
     b = [f'<div class="meta">Trigger map · {html.escape(str(d.get("date", "")))}</div>',
          f"<h1>{html.escape(d['project'])}</h1>"]
     if d.get("vision"):
@@ -480,10 +448,10 @@ def html_map(d, svg, imports, css):
         b.append(f"<h2>Key read</h2>{paras(d['key_read'])}")
     if d["points"]:
         b.append("<h2>Points to consider</h2><ul>" + "".join(f"<li>{inline(p)}</li>" for p in d["points"]) + "</ul>")
-    return page(f"Trigger map: {d['project']}", imports, css, "\n".join(b))
+    return page(f"Trigger map: {d['project']}", th, "\n".join(b))
 
 
-def html_persona(d, p, imports, css):
+def html_persona(d, p, th):
     label = PRIORITY.get(p["priority"], (p["priority"].title(), ""))[0]
     names = {g["id"]: g["name"] for g in d["goals"]}
     b = [f'<div class="meta">Persona {p["nn"]} · {label} · {html.escape(d["project"])}</div>',
@@ -519,7 +487,7 @@ def html_persona(d, p, imports, css):
         b.append("<h2>Business goals</h2><table>" + "".join(
             f"<tr><th>{gid}</th><td><strong>{inline(names.get(gid, ''))}</strong><br>{inline(t)}</td></tr>" for gid, t in p["goal_links"].items()) + "</table>")
     b.append('<p><a href="00-trigger-map.html">The whole trigger map</a></p>')
-    return page(p["name"], imports, css, "\n".join(b))
+    return page(p["name"], th, "\n".join(b))
 
 
 # ── render ──────────────────────────────────────────────────────────────
@@ -531,15 +499,15 @@ def write(path, text):
 
 def render(folder, theme_path=None):
     d = load(folder)
-    t, imports, css, tokens = theme(folder, theme_path)
-    print(f"Tema: {'neutral + ' + str(tokens) if tokens else 'neutral (ingen visual-identity/tokens.css hittades)'}")
+    th = Theme(folder, theme_path)
+    print(f"Tema: {th.describe()}")
     write(folder / "01-business-goals.md", "\n".join(md_goals(d)))
     for p in d["personas"]:
         write(folder / f"{p['file']}.md", "\n".join(md_persona(d, p)))
-        write(folder / f"{p['file']}.html", html_persona(d, p, imports, css))
-    svg = svg_map(d, t)
+        write(folder / f"{p['file']}.html", html_persona(d, p, th))
+    svg = svg_map(d, th)
     write(folder / "00-trigger-map.svg", svg)
-    write(folder / "00-trigger-map.html", html_map(d, svg, imports, css))
+    write(folder / "00-trigger-map.html", html_map(d, svg, th))
     write(folder / "00-trigger-map.md", "\n".join(md_map(d)))
     if d["features"]:
         write(folder / "feature-impact.md", "\n".join(md_features(d)))

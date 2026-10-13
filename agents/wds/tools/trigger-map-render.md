@@ -2,7 +2,7 @@
 name: trigger-map-render
 source: wds
 type: script
-description: Renders the whole Trigger Map from one data file, trigger-map.yaml, into the markdown documents, the map as SVG and HTML, and one persona page per persona. Same template every time; the look comes from the visual identity, with a neutral WDS theme as default. The script is trigger-map-render/render.py.
+description: Renders the whole Trigger Map from one data file, trigger-map.yaml, into the markdown documents, the map as SVG and HTML, and one persona page per persona. Same template every time; the look comes from the brand, with a neutral WDS theme as default. The script is trigger-map-render/render.py.
 used_by: [trigger-map]
 ---
 
@@ -24,22 +24,7 @@ The generated files start with a comment saying so. Change the yaml and render a
 | What | Where |
 |---|---|
 | Python package | `python -m pip install pyyaml` (once per computer) |
-| Default look | `trigger-map-render/themes/neutral.css`: quiet, one ink and one accent |
-| The client's look | `visual-identity/tokens.css`, the nearest one above the folder (the project, then each level up to the repo root). It overrides the `--wds-*` roles, and may `@import` the client's fonts. |
-
-### The theme roles
-
-A client's `tokens.css` maps its own tokens to these roles. A role it leaves out keeps the neutral value.
-
-| Role | Used for |
-|---|---|
-| `--wds-paper`, `--wds-surface` | Background |
-| `--wds-ink`, `--wds-ink-2`, `--wds-ink-3` | Text, supporting text, labels. The product block on the map is ink with paper text, so contrast holds in every theme. |
-| `--wds-line` | Hairlines, borders, connectors |
-| `--wds-accent`, `--wds-accent-ink` | Accent graphics, accent as text and links |
-| `--wds-positive`, `--wds-negative` | Forces toward and away from |
-| `--wds-font-display`, `--wds-font-body`, `--wds-font-mono` | Headings, body, labels and scores |
-| `--wds-radius` | Corner radius |
+| The look | The shared [theme](theme.md): neutral by default, the client's `brand/design-system/tokens.css` when it exists |
 
 ## Actions
 
@@ -49,7 +34,7 @@ A client's `tokens.css` maps its own tokens to these roles. A role it leaves out
 python agents/wds/tools/trigger-map-render/render.py projects/<project>/B-Trigger-Map
 ```
 
-It prints which theme it used and every file it wrote, and flags persona files that no longer belong to a persona in the yaml. `--theme <path to css>` uses a specific theme instead of the visual identity.
+It prints which theme it used and every file it wrote, and flags persona files that no longer belong to a persona in the yaml. `--theme <path to css>` uses a specific theme instead of the brand's.
 
 ### Bring in an existing Trigger Map
 
@@ -111,4 +96,4 @@ Text fields take inline markdown: `**bold**`, `*italic*`, `` `code` `` and links
 |---|---|
 | `Ingen trigger-map.yaml` | Write the data file, or bring in an existing map with `import`. |
 | `ModuleNotFoundError: yaml` | `python -m pip install pyyaml` |
-| The poster uses the neutral theme in a client repo | The repo has no `visual-identity/tokens.css` yet. Write it from the visual identity's tokens, mapping them to the roles above. |
+| The poster uses the neutral theme in a client repo | The brand has no `tokens.css` yet. See the [theme tool](theme.md). |
