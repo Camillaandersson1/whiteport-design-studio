@@ -584,24 +584,9 @@ Design Context (Focused):
 
 ---
 
-## Visual Mermaid Diagrams
+## The visual map
 
-**Create visual trigger maps using Mermaid syntax:**
-
-```mermaid
-graph TD
-    BG1[1000 Users] --> TG1[Independent Consultants]
-    BG1 --> TG2[Small Firms]
-    
-    TG1 --> P1[Harriet - Solo Consultant]
-    
-    P1 --> DF1[+ Feel professional]
-    P1 --> DF2[+ Save time]
-    P1 --> DF3[- Fear losing clients]
-    P1 --> DF4[- Frustrated by formatting]
-```
-
-**See:** `../../workflows/2-trigger-mapping/mermaid-diagram/`
+The map, the documents and the persona pages are rendered from `trigger-map.yaml` with the [trigger-map-render tool](../../../tools/trigger-map-render.md), in the client's visual identity or the neutral WDS look. They are never drawn or written by hand.
 
 ---
 
@@ -614,10 +599,7 @@ graph TD
 3. **Create personas** (psychological depth)
 4. **Discover driving forces** (positive + negative)
 5. **Prioritize forces** (Feature Impact Analysis)
-6. **Generate visual map** (Mermaid diagram)
-7. **Document findings** (structured markdown)
-
-**See:** `../../workflows/2-trigger-mapping/workshops/`
+6. **Render** the map, the documents and the persona pages from the data file
 
 ---
 
