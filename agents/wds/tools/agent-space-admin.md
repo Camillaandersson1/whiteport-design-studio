@@ -143,6 +143,10 @@ curl -s -X POST "$URL/functions/v1/agent-messages" \
 
 Handovers between agents go through wrap in the repo, not through this call.
 
+## Known issues
+
+- **Semantic search returns 500** (seen 2026-09-17, unverified since): `functions/v1/search-design-space` answers `operator does not exist: extensions.vector <=> extensions.vector`, while `capture-design-space` works (200), so nothing written is lost. Likely cause: pgvector moved to the `extensions` schema and the SQL function's `search_path` no longer resolves `<=>`. Probable fix: `SET search_path` on the function, or schema-qualify the operator. Until it is fixed, agents cannot follow "search before you start"; if a session seems to lack earlier knowledge, say so.
+
 ## Not available
 
 - Other backends (local file database, an organization's own SQL server): no tool yet. Write one with the librarian before installing.
