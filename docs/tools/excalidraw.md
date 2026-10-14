@@ -17,7 +17,7 @@ This creates a genuine **two-way collaboration loop** that no other wireframing 
 2. User opens in VS Code, tweaks layout and positions visually
 3. Agent reads file back, updates spec to match
 4. Agent adds new elements or cleans up annotations
-5. User exports PNG for documentation
+5. Agent exports PNG for documentation with the [excalidraw-export](../../agents/wds/tools/excalidraw-export.md) tool
 
 **Output formats:**
 - `.excalidraw` — Editable JSON source (version controlled)
@@ -140,8 +140,7 @@ When a page spec exists but has no wireframe yet:
    - groupIds matching spec sections
 3. Agent adds annotation layer (optional, for dev reference)
 4. User opens file, adjusts layout visually
-5. User exports PNG
-6. Agent updates spec header to reference wireframe + PNG
+5. Agent exports PNG and updates the spec header to reference wireframe + PNG (excalidraw-export, `--update-spec`)
 ```
 
 **Agent code pattern:**
@@ -195,7 +194,7 @@ When the wireframe needs changes (new elements, cleanup, style updates):
    - Update: element.strokeColor = '#ffffff'
 3. Agent writes file back
 4. User closes and reopens tab in VS Code (extension caches in memory)
-5. User reviews, adjusts, exports new PNG
+5. User reviews and adjusts; agent exports a new PNG
 ```
 
 ### Workflow C: Spec ↔ Wireframe Sync
@@ -301,10 +300,13 @@ The spec should include an ASCII layout diagram that matches the wireframe:
 
 **4. Export PNG After Each Major Change**
 - PNG is what renders on GitHub
-- Excalidraw extension has built-in export
+- The agent exports with `python agents/wds/tools/excalidraw-export/excalidraw-to-image.py <file>.excalidraw` (see [excalidraw-export](../../agents/wds/tools/excalidraw-export.md)); the extension's built-in export also works
 - Keep PNG and .excalidraw in sync
 
-**5. Version Control Both Files**
+**5. Start From a Copy**
+- A new wireframe begins as a copy of the closest existing one, never from an empty canvas
+
+**6. Version Control Both Files**
 - Commit `.excalidraw` (editable source) and `.png` (rendered image)
 - JSON diffs show exactly what changed
 
@@ -350,7 +352,7 @@ Wireframes use a 1440px desktop canvas width convention:
 
 ### Export Quality
 
-PNG export from the VS Code extension is adequate for documentation. For higher quality, open the file at excalidraw.com and export from there.
+The excalidraw-export script renders rectangles, ellipses, text and lines flat and clean, which is what wireframes need; `--scale 2` gives a sharper image. For arrows, free drawing or the hand-drawn look, export from the VS Code extension or excalidraw.com.
 
 ---
 
