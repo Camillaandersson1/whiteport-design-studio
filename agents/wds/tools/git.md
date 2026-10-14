@@ -48,6 +48,8 @@ git push
 - `<typ>` är till exempel `wrap`, `brief`, `design` eller `fix`.
 - En skill eller ett tool committas alltid för sig: `skill(<namn>): <vad och varför>` eller `tool(<namn>): <vad och varför>`, med bara den filen och dess skript.
 - Lägg till specifika sökvägar, inte `git add -A` i blindo. Kolla `git status` först.
+- **Räkna med parallella sessioner.** Flera agenter jobbar ofta i samma repo samtidigt, särskilt där det finns en `sessions/`-mapp eller en öppen överlämning. Kolla `git reflog -5` och `git log --oneline -5` efter färska commits från en annan session innan du gör commit.
+- **Laga framåt.** Ett eget misstag rättas med en ny commit. Aldrig `reset`, `commit --amend`, kedjor av `revert` eller `checkout -- <fil>` för att ångra: en annan sessions commit eller osparade ändring kan landa sekunder före och försvinna. Fråga innan något kommando som skriver om historik.
 - **Om `pull --rebase` krockar:** stanna och visa konflikten för användaren. Lös den inte på egen hand i någon annans filer.
 - **Om `push` misslyckas:** säg det rakt ut med felmeddelandet. Påstå aldrig att något är pushat utan att ha sett det gå igenom.
 - Kvittera med commit-hash: `git log --oneline -1`.
@@ -56,4 +58,5 @@ git push
 ## Aldrig
 
 - `git push --force`, `git reset --hard` eller att skriva om historik som redan är pushad
+- `reset`, `commit --amend` eller `checkout -- <fil>` i ett repo där en annan session kan vara igång
 - Commit av hemligheter som `.env`, nycklar eller lösenord
