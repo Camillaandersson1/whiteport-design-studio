@@ -64,6 +64,15 @@ Buttons and their labels must always be grouped together (`groupIds: ["same-id"]
 
 ---
 
+## Working with the file
+
+- **Start from a copy.** A new wireframe begins as a copy of the closest existing one (same layout type, same header and footer), never from an empty canvas.
+- **Sub-agents read this file first.** A wireframe sub-agent's prompt says "First read `agents/wds/tools/wireframe.md` and apply every rule in it" instead of carrying copied rules.
+- **VS Code does not reload.** The Excalidraw extension keeps the file in memory. After the agent writes the file on disk, tell the user to close and reopen the tab to see the change.
+- **PNG for approval and GitHub:** export with [excalidraw-export](excalidraw-export.md).
+
+---
+
 ## Approval loop
 
 1. Draw one screen.
