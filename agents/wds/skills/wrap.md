@@ -10,6 +10,8 @@ tools: [wds/git]
 
 Agentoberoende. Skillen beskriver *vad* som ska göras. Hur git används står i [git-toolet](../tools/git.md).
 
+**Wrap frågar inte vad som hände.** Agenten var med i samtalet och tar vad som gjordes, vad som återstår och nästa steg ur samtalet och git. De enda frågorna är var sessionerna och det privata skåpet ska ligga, och bara när svaret saknas (steg 1 och 4).
+
 ## 1. Vem, vilken session, till vem
 
 - **Användare:** identifiera enligt git-toolet. Det ger `<användare>`, alltså GitHub-användarnamnet med små bokstäver.
@@ -176,6 +178,7 @@ Spara och dela överlämningen, projektloggarna och repots användarfiler enligt
 
 Visa användaren:
 - session-id, mottagare och sökväg till överlämningen
+- överlämningen i sin helhet, så att personen ser att fokus stämmer innan nästa session börjar från den
 - vad som ändrades i soul-filerna, per fil och skåp (repo eller privat), eller "inget nytt"
 - den privata överlämningen, om något om ekonomi, hälsa eller familj kom upp
 - skills som ändrades: var de ligger nu och att katalogen är uppdaterad

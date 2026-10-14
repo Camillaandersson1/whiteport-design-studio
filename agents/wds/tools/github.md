@@ -19,6 +19,14 @@ gh auth refresh -s admin:org       # if the organization uses SSO or needs org a
 
 Gate for setup: `gh auth status` shows the right account, and a test push works.
 
+## Repos with several remotes
+
+`gh` picks one remote on its own, and it may be the wrong one. whiteport-design-studio also has `bmadwds` and `upstream`, which point to bmad-code-org. Name the repo for PRs and issues:
+
+```bash
+gh pr list -R whiteport-collective/whiteport-design-studio
+```
+
 ## Create a repo
 
 ```bash

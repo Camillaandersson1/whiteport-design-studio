@@ -90,3 +90,14 @@ En rad per händelse, i ordning:
 | Bakgrundsprocessen avslutas oväntat | Läs dess utskrift, och gå med igen. Den nya filen får en ny tid i namnet; läs den gamla med `transcript`. |
 
 Fördröjningen från tal till fil är några sekunder (Fireflies taligenkänning), plus bevakningens intervall.
+
+## Inte tillgängligt
+
+**Agenten kan inte tala i mötet.** Två vägar finns om det behövs, så att det inte behöver utredas igen:
+
+| Väg | Hur | Passar |
+|---|---|---|
+| Virtuell ljudkabel | Text till tal till en virtuell mikrofon: VB-Cable och VoiceMeeter (Windows), BlackHole och Loopback (Mac). Personen väljer kabeln som mikrofon, och agenten talar i personens plats. Billigt men ömtåligt. | Eget bruk |
+| Mötesbot som tjänst | Recall.ai eller Meetstream.ai går med som egen deltagare med egen mikrofon. Betalas per minut. Att bygga själv kräver tre integrationer (Zoom, Teams, Meet). | Kunder |
+
+Börja med ljudkabeln för eget bruk och byt till en mötesbot när det ska användas av kunder (bedömt 2026-04).

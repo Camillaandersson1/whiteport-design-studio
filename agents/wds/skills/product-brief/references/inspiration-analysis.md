@@ -51,6 +51,8 @@ Ask the client for 2-4 sites they find inspiring. These could be:
 
 **If client is hesitant:** Even one site with one thing they like is valuable. Don't require perfection — any concrete reference beats abstract descriptions.
 
+**Places to look together:** [Dribbble](https://dribbble.com/) for UI patterns and visual styles, and [Font of Web](https://fontofweb.com/) to identify the fonts on any site the client likes.
+
 **If client has no references:** Offer to find 2-3 examples in their industry. Show them and ask for reactions.
 
 ### Analyzing Each Site

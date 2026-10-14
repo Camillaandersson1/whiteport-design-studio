@@ -102,3 +102,5 @@ The suite is numbered in reading order. The numbers are fixed, and a skipped doc
 | Simple, low-stakes, short | Haiku |
 
 Default: lightest model that fits. Prefix Next actions with `MODEL:[Haiku|Sonnet|Opus]`.
+
+Sonnet is never recommended for writing code, even small scripts; when Saga or Freya need code, the next step goes to Opus. Codex is OpenAI's agent and never gets a Claude model: give it the strongest current GPT coding model (GPT-5.4 or later as of 2026-04).

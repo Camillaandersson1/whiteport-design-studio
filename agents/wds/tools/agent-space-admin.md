@@ -41,6 +41,8 @@ Use the service-role key only for the writes marked **admin** below, and never p
 
 Run from the backend source (`agent_space_backend`, by default the `design-space` repo's `database/supabase/`). Needs the Supabase CLI and a logged-in account.
 
+Deploy functions to Whiteport's production project only from `design-space`. The copy of `session-start` in whiteport-design-studio-enterprise-codebase filters `agent_space` on `org_id`, a column the production table did not have, and deploying it broke every agent's session start (2026-05-03). Diff against `design-space` before any deploy.
+
 ```bash
 supabase projects create "<org>-agent-space" --org-id <supabase-org> --region eu-north-1 --db-password "$(bw get password "<db-password-item>")"
 supabase link --project-ref <project-ref>

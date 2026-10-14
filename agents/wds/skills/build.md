@@ -57,6 +57,7 @@ Implements a PRD one requirement at a time. Every requirement gets its own commi
       Implement the requirement.
       Write focused, minimal code — exactly what the requirement specifies.
       No extras, no refactoring of unrelated code.
+      Moving something that already works (a CSS effect, an overlay, a component): copy its values verbatim and change only what the new place needs structurally. No new colours or effects unless asked. One change at a time, checked in the browser before the next.
       If the requirement touches what people see: read the right Taste skill (`../data/taste.md`) and run its AI-pattern check before committing.
     </sub-step>
 

@@ -51,6 +51,7 @@ git push
 - **Om `pull --rebase` krockar:** stanna och visa konflikten för användaren. Lös den inte på egen hand i någon annans filer.
 - **Om `push` misslyckas:** säg det rakt ut med felmeddelandet. Påstå aldrig att något är pushat utan att ha sett det gå igenom.
 - Kvittera med commit-hash: `git log --oneline -1`.
+- **Före en granskning:** gör commit och push innan du ber en annan agent (Codex, en annan session) granska eller ta över. Den läser repot och ser inte det som bara finns lokalt.
 
 ## Aldrig
 
