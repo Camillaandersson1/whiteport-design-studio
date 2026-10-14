@@ -1,7 +1,7 @@
 ---
 skill: ux-design
 used_by: [freya]
-tools: [wds/wireframe]
+tools: [wds/wireframe, wds/excalidraw-export]
 prerequisites:
   - "{output_folder}/C-UX-Scenarios/00-ux-scenarios.md"
 output_folder: "{output_folder}/D-UX-Design"
@@ -18,8 +18,10 @@ Transforms UX Scenarios into development-ready page specifications through the D
   <constraints>
     - The Design Loop runs once per page. Steps execute in sequence.
     - Spec Writer generates spec files — do not write specs inline.
-    - Wireframes use Excalidraw by default. PNG export required for approval.
+    - Wireframes use Excalidraw by default. PNG export required for approval (excalidraw-export tool).
     - The approval gate (step 4) is a hard stop — do not proceed without user confirmation.
+    - When the user shares a sketch (paper, photo, screenshot, wireframe), run <step id="sketch"> before any spec is written.
+    - Specs describe intent and static states. Protocol-level interaction (chat queue/interrupt on send, streaming timing, auto-scroll, soft keyboard, ms timings, gestures, hover micro-interactions) is not designed on paper: it goes to Open Questions tagged "to be designed against a real device".
     - Token Extractor runs after browser review, not before.
     - Visual design beyond the wireframe (mockups, prototypes, anything rendered) follows `../data/taste.md`: the spec and the project's design first, Taste for the rest. Wireframes stay rough.
     - Update Design Loop Status table in design log after each loop step.
@@ -62,6 +64,24 @@ Transforms UX Scenarios into development-ready page specifications through the D
 
     Ask: "Which page do you want to design first?"
     → go to <step id="design-loop">
+  </step>
+
+  <!-- ═══════════════════════════════════════════
+       SKETCH — when the user shares a sketch
+  ═══════════════════════════════════════════ -->
+
+  <step id="sketch">
+    A sketch is read together with the user, never turned straight into a spec.
+    Method: `src/workflows/4-ux-design/workflow-sketch.md`, the gated step `steps-k/step-01-sketch-analysis.md`
+    and `data/guides/SKETCH-TEXT-ANALYSIS-GUIDE.md` / `SKETCH-TEXT-QUICK-REFERENCE.md` beside it.
+    Reading the image file directly is fine; the order around it is what matters:
+
+    1. **Holistic read.** Calibrate scale from UI anchors and earlier pages (their patterns and sizes).
+    2. **Sections.** Present the sections you see and wait: confirm, adjust, add, or remove/merge.
+       No detailed specification before the user has confirmed the structure.
+    3. **Refine per section,** top-left to bottom-right, with the object hierarchy. The user confirms each section.
+    4. **Content.** Gather the text (and translations) per text element.
+    5. **Batch spec.** Only now generate the section specs, then continue in the design loop.
   </step>
 
   <!-- ═══════════════════════════════════════════
@@ -116,7 +136,9 @@ Transforms UX Scenarios into development-ready page specifications through the D
 
       "I'll now create the wireframe for [Page name]."
 
-      Invoke `../freya/subagents/wireframe.md` with the page spec.
+      Invoke `../freya/subagents/wireframe.md` with the page spec. The prompt starts with
+      "First read `agents/wds/tools/wireframe.md` and apply every rule in it." Never paste the rules
+      into the prompt: they change during a session, and a copy goes stale.
 
       When the wireframe agent reports back, present the description it returns.
 
