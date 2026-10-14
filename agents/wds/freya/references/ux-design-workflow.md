@@ -57,7 +57,7 @@ The spec is the source of truth. What's not in the spec will not be built.
 
 ## Step 3 — Wireframe
 
-Wireframes are structural layouts, not visual designs. See `tools/wireframe/SKILL.md` for the complete rule set.
+Wireframes are structural layouts, not visual designs. See `agents/wds/tools/wireframe.md` for the complete rule set; the wireframe subagent reads it first, every time.
 
 Key principles:
 - Show layout regions, interactive elements, real labels and placeholder text

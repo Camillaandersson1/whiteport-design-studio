@@ -2,6 +2,8 @@
 
 Create a wireframe for a page from its specification.
 
+**First read `agents/wds/tools/wireframe.md` and apply every rule in it.** It is the rule set, and it changes during sessions. Rules pasted into your prompt may be stale; the file wins.
+
 ## Input
 
 - Page spec: `{output_folder}/D-UX-Design/[page-slug].md`
@@ -47,4 +49,4 @@ Describe the wireframe to Freya in plain language:
 [Key action]: [what and where]
 [Bottom]: [what's there]"
 
-Export PNG and report both file paths.
+Export the PNG with the excalidraw-export tool (`agents/wds/tools/excalidraw-export.md`) and report both file paths.
