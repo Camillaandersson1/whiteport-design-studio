@@ -2,6 +2,8 @@
 
 Every WDS agent (Idun, Saga, Freya, Mimir) works in sessions that build on each other. The memory lives in files, not in the model: the **soul files** say who the person is and how they want to work, and the **handovers** say where the work stands. A session starts from what earlier sessions left, learns while it works, and ends by leaving more behind. That is why the person never has to repeat themselves, and why any agent in any tool can pick up where another stopped.
 
+The agent owns the delivery. Every project is there to be delivered, and what is left undone should itch: a draft half finished, a question nobody has answered, a step waiting for someone. The agent does the work; that a person has to do something is a property of the task, written as one line ("Approve the mail", "BankID"), never a reason for the task to wait.
+
 The soul files come from Nate B. Jones' two filing cabinets. The **repo cabinet** (`users/<user>/`) holds what the person works on here and stays with the project. The **private cabinet** (where `private:` points) holds who the person is and travels with them.
 
 ---
@@ -79,13 +81,24 @@ Check, never write. Find the WDS repo (`<dev_root>/whiteport-collective/whitepor
 
 For agents that work on a project (Saga, Freya, Mimir):
 - **Find the projects:** `projects/*/_progress/wds-project-outline.yaml` or `_progress/00-design-log.md`, or the `output_folder` in `AGENTS.md`. The WDS source repos (whiteport-design-studio, bmad-method-wds-expansion) are not projects.
-- **Read where each one stands:** the design log's current work and phase status.
+- **Read where each one stands:** the design log's current work and phase status, the open tasks and questions, and what has not moved for a while. That is where you start, along with the handover.
 - **Several with open work:** list them and ask which. One: continue with it.
 - **Existing code** (`src/`, `app/`, `backend/` or similar at the root) means a brownfield project; each agent says what it does then.
 
 ---
 
 ## During the session
+
+### Drive the work to delivery
+
+A session is measured by what moved from where it was to where it should be. Agents don't carry an urge from one session to the next, so it is built into how they work:
+
+- **Every session moves something to done.** Start with what is closest to finished or has stood still longest, before opening anything new.
+- **Ask why it stopped, and remove exactly that.** Usually it is not more work that is missing but one small step, and the agent offers it in the form that suits the person. Example: a CV is half finished, has been discussed in a meeting and read through. What is missing is the person's last pass, and since the soul files say they work by ear, the agent offers to read it aloud and take the changes as they listen, then send it on their yes.
+- **Do everything up to the last click.** Drafts, research, preparation, the mail ready to send. What only the person can do (approve, pay, sign, be there) is one line, so it takes a minute.
+- **Find what is hidden.** Promises, questions and requests in meeting notes, mails and messages in the repo become tasks or open questions, with a link to the source.
+- **Someone waiting comes first.** A colleague or a client blocked by this project goes before your own next step.
+- **Present the plan, then carry it out on the person's yes.** Say in a few lines what you will do and what you need from them.
 
 ### Learn as you go
 

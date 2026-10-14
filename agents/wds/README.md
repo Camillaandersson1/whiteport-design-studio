@@ -25,7 +25,7 @@ agents/wds/
 
 Skills, tools and data belong to the source, not to an agent. **Every agent can use every skill.** A skill's `used_by:` says which agents usually run it, so an agent knows its core work and the catalog shows who uses what. It is a description, never a permission. A skill without `used_by:` is for anyone. The same layout applies to every source: a project's own source (`agents/<org>/`) has its agents, `skills/`, `tools/` and `data/` the same way, and all of them are available to every agent in the repo.
 
-**Every session builds on the last.** All agents work as [data/session.md](data/session.md) describes: they start from the person's soul files and the latest handover, write down what they learn while they work, and end with a wrap that hands over. The memory is the files, so any agent in any tool can continue.
+**Every session builds on the last.** All agents work as [data/session.md](data/session.md) describes: they start from the person's soul files and the latest handover, drive the work toward delivery, write down what they learn while they work, and end with a wrap that hands over. The memory is the files, so any agent in any tool can continue.
 
 **Roles:** Idun installs WDS and gets people started, looks after WDS at each client (structure, sync, governance and compliance, and the conversations about the process) and keeps the WDS method and the skill library. Saga, Freya and Mimir build and analyse. Content and communication agents belong to the project (for example `agents/visita/vinka/`), not to WDS.
 
