@@ -25,6 +25,15 @@ The rules are in `agents/wds/README.md` (Skills and tools). The checklists are i
 
 **Every skill and tool has exactly one source repo.** Local copies (`~/.claude/commands/`, a project's `agents/wds/`) are never edited. Changes are made at the source and synced out.
 
+## An organization's catalog
+
+In an organization's own source (`agents/<org>/`, usually in `<org>-agent-space`) with governance set up:
+
+- **Every agent, skill and tool is a folder,** holding its definition and the templates, references and subagents it needs. Templates are never a category of their own: they live in the folder they belong to.
+- **An organization layer under each branch** when the organization has departments or teams: they own their skills and decide who has access (`skills/finance/…` belongs to Finance). How the catalog is organized is recorded in `<org>/agents.md`, Skill governance; a solo developer stays flat.
+- **Every asset folder has a `compliance.md`,** the governance trail at asset level: history (who created it, when, why, changes), responsibilities (owner, who may change it, who approves) and terms of use (what it may do, restrictions, escalation). Idun writes it when she creates or registers the asset, as part of the folder.
+- **Keep the format open for a network.** A large organization may later run one agent space per city, region and country, each inheriting from its parent. Don't assume there is only one.
+
 ---
 
 <workflow id="librarian">
@@ -203,6 +212,7 @@ The rules are in `agents/wds/README.md` (Skills and tools). The checklists are i
     - Add the skill to "What you produce" in the agent's `instructions.md` if the agent's core work changes.
     - Add the skill's name to `used_by:` in each tool it uses.
     - If the person invokes it directly: an adapter in each of `.claude/commands/`, `.github/prompts/` and `.agents/skills/` (for WDS, in `agents/wds/adapters/`).
+    - In an organization's source with governance: `compliance.md` in the skill folder (see "An organization's catalog").
 
     Run the Skill Validator on the result. Commit the skill on its own. Then sync.
   </step>
@@ -255,6 +265,7 @@ The rules are in `agents/wds/README.md` (Skills and tools). The checklists are i
   <step id="create-tool-3-write">
     Write `agents/<source>/tools/<name>.md`:
     frontmatter `name`, `description`, `type`, `used_by`; sections for configuration (Bitwarden item, base URL), each action with the exact command or call, and what is not available.
+    In an organization's source with governance: the tool is a folder `agents/<org>/tools/<name>/` with its `compliance.md`.
     Add the tool to `tools:` in each skill that uses it. Commit on its own.
 
     If there is approved server-side work: hand it to Mimir as a build, with the spec as the work order.
