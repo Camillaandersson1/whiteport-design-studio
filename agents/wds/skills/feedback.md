@@ -1,6 +1,6 @@
 ---
 name: feedback
-description: Live feedback rounds. User browses and reports issues in natural language, agent captures structured FB-XX items and sorts each one. Bugs (spec right, code wrong) are fixed inline or delegated. Spec issues go through the spec first, then to Mimir as a spec delta. Use when the user says "I want to give feedback", "I have feedback", "let's review", or /feedback.
+description: Live feedback rounds. User browses and reports issues in natural language, agent captures every one as a structured FB-XX item in a round file and sorts it. No code changes until the user picks; then one item at a time, fix, test in the browser, update the file, ask for the next. Spec issues go through the spec first, then to Mimir as a spec delta. Use when the user says "I want to give feedback", "I have feedback", "let's review", or /feedback.
 used_by: [freya, saga, mimir]
 argument-hint: "[optional: area to focus on, e.g. 'checkout', 'home page']"
 ---
@@ -13,7 +13,13 @@ This skill turns live browsing sessions into structured fix plans with tracked o
 
 Every WDS agent can run it. Freya owns the spec route.
 
-**The one rule:** feedback never goes to code when the spec is what's wrong. Each item is either a **bug** (the spec is right, the code doesn't follow it: fix it) or a **spec issue** (the spec is wrong or missing something: change the spec first, then brief Mimir with the spec delta).
+**Three rules:**
+
+1. **Document first.** Every item goes into the round file as `FB-XX` with root cause and proposed fix. No code changes while the round is open, and none until the user has picked which item to take.
+2. **One at a time.** Fix one item, test it in the browser, update the round file, then ask which one is next. No batches, no parallel fixes: with several fixes at once nobody can tell what worked.
+3. **Spec before code.** Feedback never goes to code when the spec is what's wrong. Each item is either a **bug** (the spec is right, the code doesn't follow it: fix it) or a **spec issue** (the spec is wrong or missing something: change the spec first, then brief Mimir with the spec delta).
+
+Users give feedback in bursts: spoken, fast, jumping between things. The round file catches all of it so nothing is lost between sessions, even though the fixing goes one by one.
 
 ---
 
@@ -78,10 +84,11 @@ Add the issue to the feedback file immediately as `FB-{XX}`:
 **Fix:** [Concrete change needed, or the spec change for spec issues]
 
 **Severity:** Low | Medium | High
-**Assigned to:** [Self | Mimir | Codex | Spec | Deferred]
+**Proposed:** [Self | Mimir | Codex | Spec | Deferred]
+**Status:** Open
 ```
 
-Update the summary table at the bottom of the file.
+Update the summary table at the bottom of the file. Do not touch the code yet, not even for a one-line fix.
 
 ### 4. Acknowledge
 
@@ -95,77 +102,52 @@ Do NOT summarize what they just said back to them. Do NOT give lengthy explanati
 
 ---
 
-## Triage Rules
+## Proposed handling
 
-Spec issues are never fixed in code during the round: mark them **Spec** and handle them in "Spec issues" below. Assign each **bug** based on complexity:
+Sort each item while logging it, as a proposal. Nothing is fixed during the round.
 
-| Complexity | Action |
+| Item | Proposed |
 |-----------|--------|
-| One-line CSS/label change | Fix inline yourself, mark Fixed. Visual fixes follow `../data/taste.md` |
-| Small component change (< 20 lines) | Fix inline yourself, mark Fixed |
-| Architectural change or multi-file | Assign to sub-agent (Mimir/Codex) |
-| Needs a design decision | Mark Open, discuss with user |
-| Not needed now | Mark Deferred with reason |
+| Bug, small (CSS, label, < 20 lines) | Self. Visual fixes follow `../data/taste.md` |
+| Bug, architectural or multi-file | Mimir or Codex, still one item at a time |
+| Spec issue | Spec (see "Spec issues" below) |
+| Needs a design decision | Open, discuss with the user |
+| Not needed now | Deferred, with the reason |
 
 ---
 
 ## When the User Is Done
 
-### 1. Commit baseline
+### 1. Present and commit the round
 
-Always commit all current changes before spawning fix agents:
+Show the summary table: every FB-XX with its type, severity and proposed handling. Commit the round file:
 
 ```
-git add [changed files]
+git add [round file]
 git commit -m "docs: capture feedback round FB-01 through FB-XX"
 ```
 
-### 2. Fix quick items
+Ask: "Which one first?" Wait. The user picks; do not start on your own priority order.
 
-Fix all Low-severity inline items yourself first. Commit them.
+### 2. One item at a time
 
-### 3. Spawn parallel agents
+For the item the user picked:
 
-Group remaining issues by file ownership — never let two agents edit the same file. Spawn them in parallel using background agents:
+1. **Fix it.** Yourself, or hand that one item to Mimir/Codex with the exact file paths, what to change and why, and no other files to touch. Wait for it to finish.
+2. **Test it in the browser.** Reload, walk the affected flow, screenshot. A fix is not done until it is visually confirmed. Check that nothing next to it broke.
+3. **Update the round file:** status Fixed (or what happened instead), what changed, the file and line.
+4. **Commit** that one item: `fix: FB-XX <short title>`.
+5. **Ask:** "FB-XX done. Next?"
 
-```
-Agent 1: FB-03, FB-07 (both in shipping/index.tsx)
-Agent 2: FB-05, FB-11 (both in payment/index.tsx)
-Agent 3: FB-09 (architectural — checkout-panel-content)
-```
+Spec items follow the same order: when the user picks one, run it through "Spec issues" below before any code.
 
-Each agent prompt must include:
-- The exact file path(s)
-- What to change and why
-- Instruction to read the file first
-- No other files to touch
-
-### 4. Evaluate results
-
-As each agent completes:
-- Check the change makes sense
-- Run TypeScript check on affected files
-- Update FB status in the feedback file
-
-### 5. Browser verify
-
-After all agents complete:
-- Reload the site
-- Walk through the affected flow
-- Take screenshots of fixed items
-- Note any regressions
-
-### 6. Final commit
-
-```
-git commit -m "fix: resolve N feedback points (FB-XX through FB-YY)"
-```
+New feedback that comes up while fixing goes into the round file as a new FB-XX, and waits its turn.
 
 ---
 
 ## Spec issues
 
-Handled after the round, page by page. The spec is the source of truth.
+Handled when the user picks them, page by page. The spec is the source of truth.
 
 1. **Analyse.** Group the spec items per page and present them: "[Page]: [item] → [type]: [what changes in the spec]". Out-of-scope items listed separately. Wait for confirmation.
 2. **Propose the edit.** Per change: section, before, after. Wait for explicit approval. Never update the spec before it.
@@ -194,7 +176,8 @@ Handled after the round, page by page. The spec is the source of truth.
 **File:** `path/to/file.tsx:line`
 **Fix:** ...
 **Severity:** Low | Medium | High
-**Assigned to:** ...
+**Proposed:** ...
+**Status:** Open | Fixed | Spec updated | Deferred
 
 ---
 
@@ -223,9 +206,8 @@ Save the full summary for after they say they're done.
 ## Key Principles
 
 1. **Never disable the user's flow.** Capture fast, investigate async.
-2. **Spec before code.** A spec issue changes the spec first. Only bugs go straight to code.
-3. **Fix what you can, delegate what you can't.** Don't batch everything to Mimir if you can fix 5 of 8 items in 30 seconds.
-4. **Commit before spawning.** Always have a clean baseline.
-5. **One agent per file.** Never let two agents edit the same file.
-6. **Verify in browser.** Fixes aren't done until they're visually confirmed.
-7. **The feedback file is the source of truth.** Everything tracked there, not in conversation memory.
+2. **Document first, fix later.** The whole round is written down before any code changes, and the user picks what to take.
+3. **One item at a time.** Fix, test in the browser, update the file, ask for the next. Never batch, never parallel.
+4. **Spec before code.** A spec issue changes the spec first. Only bugs go straight to code.
+5. **Verify in browser.** Fixes aren't done until they're visually confirmed.
+6. **The feedback file is the source of truth.** Everything tracked there, not in conversation memory.
