@@ -29,7 +29,7 @@ The repo is where the session works. It is the current folder, or a repo below i
 1. **The user** is identified per `agents/wds/tools/git.md`.
 2. **New user** (no `users/<user>/`): say in one line that they are new and that their soul files grow from the sessions. Create the folder from `users/_template/` and go straight on. No interview. Wrap asks where the private cabinet should live.
 3. **Repo cabinet:** `users/<user>/user.md`, `soul.md`, `objectives.md`, `achievements.md`.
-4. **Private cabinet:** the `private:` line in `.wds/me.md`, else in `users/<user>/user.md`. A local folder or a repo; find it on this machine. Read `user.md`, `soul.md`, `identity.md`, `objectives.md` and `heartbeat.md`. **Never read its `private/` subfolder.**
+4. **Private cabinet:** the `private:` line in `.wds/me.md`, else in `users/<user>/user.md`. A local folder or a repo; find it on this machine. Read `user.md`, `soul.md`, `identity.md`, `objectives.md` and `heartbeat.md`, and the people register `people/README.md`. When a person comes up ("Camilla at Some"), open their file in `people/` before answering, so you know who they are and the history. **Never read its `private/` subfolder.**
 5. **Skills catalog:** if the private cabinet has `skills.md`, follow its section on what to run before each session.
 
 Let the files shape the work from the first answer: the person's register and language, how they decide, what frustrates them, what they are aiming for. If the repo's soul and the private one disagree, the repo's wins, because it is more specific. A missing file is fine; wrap creates it when there is something to write.
@@ -105,7 +105,7 @@ A session is measured by what moved from where it was to where it should be. Age
 What the person teaches you is worth more than anything you produce, because it carries into every later session. Don't save it all for wrap.
 
 - **When the person corrects you, states a preference, or reacts clearly to something** (approves, rejects, is frustrated): follow it from that moment, in this session, without being told twice.
-- **If it will hold beyond today,** write it at once in the file where it belongs (the table in wrap step 4): how agents should work with the person goes in `soul.md`, facts about their situation in `heartbeat.md`, a delivered result in `achievements.md`. Merge it into what is there; don't just append. Private files are committed in their own repo. Mention it in one line ("Noterat i soul.md: …") so the person sees what you learned.
+- **If it will hold beyond today,** write it at once in the file where it belongs (the table in wrap step 4): how agents should work with the person goes in `soul.md`, facts about their situation in `heartbeat.md`, a fact about a person in their life in `people/<name>.md` (and a line in `people/README.md` if they are new), a lasting fact such as an address or a company number in the Facts section of `user.md`, a delivered result in `achievements.md`. Merge it into what is there; don't just append. Private files are committed in their own repo. Mention it in one line ("Noterat i soul.md: …") so the person sees what you learned.
 - **If the correction is about the method,** such as how a skill, template or conversation guide works, it is not a fact about the person. It goes to Idun as a proposal for WDS (wrap step 2), and you follow the correction for the rest of the session.
 - Finance, health, family and relationships never go into soul files or the project repo (wrap step 4).
 

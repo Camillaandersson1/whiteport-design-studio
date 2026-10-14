@@ -102,7 +102,8 @@ För varje projekt som rördes: lägg en post i projektets designlogg. Den ligge
 
 Agenten läste soul-filerna vid start och skrev in det som skulle bestå redan under sessionen ([session.md](../data/session.md), Start och During the session). Wrap är skyddsnätet: gå igenom hela samtalet, jämför det med vad filerna säger nu och skriv in det som ännu inte står där. Leta efter allt som är nytt eller har ändrats:
 
-- **Fakta om personen:** var hen jobbar, roll, chef och kollegor, kunder, vad som har hänt
+- **Fakta om personen:** var hen jobbar, roll, chef och kollegor, kunder, vad som har hänt, adresser, bolag
+- **Människor i personens liv:** vem någon är, relationen och vad ni har gjort tillsammans
 - **Rättelser** av agenten, och vad personen uppskattade eller avvisade
 - **Insikter** om hur personen tänker, beslutar och vad hen värdesätter
 - **Mål** som tillkom, ändrades eller nåddes
@@ -117,10 +118,12 @@ Varje nyhet sorteras till rätt fil:
 | Hur agenter ska jobba med personen, i det här repot | `soul.md` | repo |
 | Vem personen är: värderingar, drivkrafter, sätt att tänka | `identity.md` | privat |
 | Professionell profil: kompetens, erfarenhet, arbetssätt | `user.md` | privat |
+| Bestående fakta: adresser, bolag med organisationsnummer, hem, kontaktvägar | `user.md`, avsnittet Fakta | privat |
+| Människor: kollegor, kunder, partner, familj och vänner. Vem, relationen, historik med datum och källa. Kontaktuppgifter står i personens adressbok (till exempel Google Contacts) och filen hänvisar dit, aldrig en kopia | `people/<namn>.md`, och en rad i `people/README.md` | privat |
 | Roll i det här projektet | `user.md` | repo |
 | Mål, personliga eller i projektet | `objectives.md` | privat eller repo |
 | Levererat i projektet | `achievements.md` | repo, överst, med länk till överlämningen |
-| Ekonomi, hälsa, familj, relationer | en överlämning till personens privata agent i `sessions/<användare>/<agent>/` i det privata skåpets repo (eller i den lokala mappen) | privat, aldrig i soul-filerna och aldrig i projektrepot |
+| Ekonomi, hälsa och känsliga detaljer om relationer (konflikter, privatliv) | en överlämning till personens privata agent i `sessions/<användare>/<agent>/` i det privata skåpets repo (eller i den lokala mappen) | privat, aldrig i soul-filerna och aldrig i projektrepot |
 
 Repots filer ligger i `users/<användare>/`. De privata ligger där `private:` pekar.
 
