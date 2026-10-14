@@ -59,6 +59,9 @@ Takes Idun from a confirmed scope to a repo where people can start working with 
     Set up the WDS workspace. Templates: `../idun/references/workspace-templates.md`.
 
     1. **Repo.** Use the existing repo, or create one (GitHub tool). Private unless the person says otherwise.
+       For an organization, its source repo is `<org>-agent-space`, under a GitHub organization `<org>`: the home of its
+       governance, access maps and org configuration. Create both here, before any governance is written in step 4;
+       without it the governance documents end up scattered in a work repo. Guide the person through git setup if needed.
     2. **`AGENTS.md`** with the team, the rules, the project table and the `output_folder`. `CLAUDE.md` points to it.
     3. **Projects.** One folder per project, each a separate WDS structure, made with `project-setup.md`
        (intake, where the code lives, `projects/<project>/` with the WDS folders, its outline and design log directly inside).
@@ -149,6 +152,7 @@ Takes Idun from a confirmed scope to a repo where people can start working with 
 ## Quality rules
 
 - **Model first, apply second.** The workspace follows the WDS conventions. The organization is an instance of them, adapted to its context.
-- **The agent asset organization is always recorded** (in `<org>/agents.md`, Skill governance) when there is governance. Three lines is fine. The decision must be recorded.
+- **The agent asset organization is always recorded** (in `<org>/agents.md`, Skill governance) when there is governance. Three lines is fine. The decision must be recorded. Flat, departmental or regional is a governance decision, not a technical preference: it sets who owns what, who may change it and who is accountable.
+- **The order is the template for every organization:** the business, then the org and its `<org>-agent-space` repo, then governance in that repo, then agents, skills and people, and infrastructure (Agent Space, Supabase or another database) last.
 - **The confirmed qualification summary is the source of truth.** Discovery is not reopened.
 - **Every phase ends with a clear gate.** The person knows what was done and what's next.
