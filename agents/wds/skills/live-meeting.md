@@ -1,7 +1,7 @@
 ---
 name: live-meeting
 source: wds
-description: Agenten är med i ett pågående möte via Fireflies. Den dokumenterar beslut, åtgärder och frågor medan mötet pågår, faktakollar påståenden mot repot och webben, och svarar när någon frågar. Mötesanteckningen skrivs live i repot.
+description: Agenten är med i ett pågående möte via Fireflies, dokumenterar och faktakollar medan det pågår, och arkiverar hela mötet efteråt. Använd när ett möte ska dokumenteras live, eller när ett inspelat möte ska arkiveras.
 used_by: [idun, saga, freya, mimir]
 version: 1.0
 tools: [wds/meeting-live, wds/git]
@@ -18,7 +18,7 @@ Ett långt möte blir användbart först när det är dokumenterat, och ett pås
   <constraints>
     - Agenten deltar bara i möten som Fireflies redan spelar in med deltagarnas vetskap.
     - Allt körs lokalt enligt [meeting-live-toolet](../tools/meeting-live.md). Ingen server, ingen MCP.
-    - Råtexten stannar i `.wds/live/` (gitignorerad). I repot hamnar anteckningen, och råtexten bara om repots `AGENTS.md` säger att mötestexter sparas.
+    - **Allt material sparas.** Efter mötet arkiveras hela transkriptet i repots mötesarkiv (`communication/meetings/`, eller där `AGENTS.md` säger), och anteckningen hamnar i projektet. Ett möte som inte arkiveras kan inte användas senare, vid ett avtal, en oenighet eller en granskning. I ett publikt repo arkiveras bara anteckningen.
     - Personen sitter i ett möte. Chatten får bara korta rader: svar på frågor och motsägelser som spelar roll nu. Allt annat står i anteckningen.
     - Skilj på vad som sades och vad som stämmer. Ett påstående som inte gått att kontrollera står som det, aldrig som fakta.
   </constraints>
@@ -26,6 +26,8 @@ Ett långt möte blir användbart först när det är dokumenterat, och ett pås
   <step id="1-join">
     Gå med i det senaste pågående mötet enligt toolet: `join` i bakgrunden, sedan bevakningen.
     Är Bitwarden låst eller inget möte igång: en rad om vad personen ska göra, enligt toolets feltabell.
+
+    **Kontrollera språket den första minuten.** Är texten obegriplig eller på fel språk har Fireflies fel språkinställning. Säg det direkt, starta toolets lokala reserv och be personen byta språk i Fireflies. Varje minut på fel språk är förlorad.
 
     Bestäm var anteckningen ska ligga:
     - där repots `AGENTS.md` säger att möten dokumenteras, annars
@@ -55,16 +57,19 @@ Ett långt möte blir användbart först när det är dokumenterat, och ett pås
     2. **Faktakolla** påståenden som spelar roll för beslut: siffror, datum, namn, påståenden om företag och personer, tekniska och juridiska påståenden. Sök först i repot (brief, tidigare möten, `communication/`, `people/`, `timeline.md` på den nivå de gäller), sedan på webben. Status är *bekräftat*, *motsägs* eller *inte verifierat*, alltid med källa.
     3. **Säg till i chatten** bara när ett påstående motsägs av en källa och det påverkar det som diskuteras, eller när någon i mötet riktar en fråga till agenten. En eller två rader.
     4. **När bevakningen löper ut,** starta den igen med samma kommando. Inget går förlorat.
+    5. **Faller anslutningen** sköter joinen det själv och fyller luckan. Dör processen, fortsätt i samma fil med `join --continue`, direkt.
   </step>
 
   <step id="4-close">
     När bevakningen visar att mötet är slut:
 
-    1. Slutför anteckningen: en sammanfattning överst, med de tre viktigaste besluten och alla åtgärder.
-    2. Kontrollera de påståenden som fortfarande står som *inte verifierat* en sista gång.
-    3. Lägg en rad i projektets designlogg om mötet, med länk till anteckningen.
-    4. Committa och pusha anteckningen och loggen (git-toolet).
-    5. Visa sammanfattningen i chatten och fråga om något ska vidare till en annan agent. Det tas med wrap eller handoff.
+    1. **Arkivera hela mötet** med toolets `archive`, med alla filer som hör till mötet: flera anslutningar, en ny inspelning på rätt språk och den lokala reserven. Fireflies färdiga transkript kan dröja några minuter; vänta in det om personen inte behöver arkivet direkt.
+    2. Slutför anteckningen: en sammanfattning överst, med de tre viktigaste besluten och alla åtgärder. Länka den i registrets sammanfattningskolumn.
+    3. Kontrollera de påståenden som fortfarande står som *inte verifierat* en sista gång.
+    4. **Åtgärder och öppna frågor** blir uppgifter och frågor där projektet håller dem, med länk till mötet. Det som agenten kan göra börjar den på (`agents/wds/data/session.md`, Drive the work to delivery).
+    5. Lägg en rad i projektets designlogg om mötet, med länk till anteckningen.
+    6. Committa och pusha arkivet, registret, anteckningen och loggen (git-toolet).
+    7. Visa sammanfattningen i chatten och fråga om något ska vidare till en annan agent. Det tas med wrap eller handoff.
   </step>
 
 </workflow>
