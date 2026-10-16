@@ -21,8 +21,9 @@ Strömmen och bevakningen är två processer. Bevakningen kan startas om när so
 | Vad | Var |
 |---|---|
 | Fireflies-nyckeln | Bitwarden-posten `Fireflies API Key`, lösenordsfältet. Hämtas vid körning, skrivs aldrig till fil. |
-| Python-paket | `python -m pip install "python-socketio[client]"` (en gång per dator) |
-| Mötesfilen | `.wds/live/` i repots rot. `.wds/` är gitignorerad, så råtexten hamnar aldrig i git av misstag. |
+| Python-paket | `python -m pip install "python-socketio[client]"` (en gång per dator). Den lokala reserven: `pyaudiowpatch faster-whisper numpy`. |
+| Mötesfilen | `.wds/live/` i repots rot, arbetsmaterial under mötet. `.wds/` är gitignorerad. |
+| Mötesarkivet | `communication/meetings/` på den nivå det gäller (repots rot för en kund), med registret `communication/meetings.md`. Repots `AGENTS.md` kan ange en annan plats. |
 
 Skriptet: `agents/wds/tools/meeting-live/live.py`. I ett repo utan `agents/wds/` används sökvägen i WDS-repot.
 
@@ -44,6 +45,14 @@ FIREFLIES_API_KEY="$(bw get password 'Fireflies API Key')" python agents/wds/too
 
 Utskriften börjar med `Ansluten till "<titel>"` och `Fil: <sökväg>`. Mötets tidigare repliker skrivs in först, så att agenten kommer ikapp.
 
+**Joinen håller sig vid liv.** Faller anslutningen till Fireflies och kommer inte tillbaka inom 20 sekunder, bygger joinen en ny i samma fil och fyller luckan ur Fireflies sparade transkript. Bevakningen visar `== Anslutningen föll, ansluter igen ==` och `== Luckan fylld med N repliker ==`. Ingen replik skrivs två gånger.
+
+**Har processen dött,** fortsätt i samma fil i stället för att starta en ny:
+
+```bash
+FIREFLIES_API_KEY="$(bw get password 'Fireflies API Key')" python agents/wds/tools/meeting-live/live.py join --continue .wds/live/<fil>.jsonl
+```
+
 ### Bevaka
 
 **Claude Code:** Monitor med kommandot nedan och `timeout_ms: 1800000`. Varje utskrift är en klump nya repliker. När bevakningen löper ut efter 30 minuter startas den igen med samma kommando.
@@ -62,6 +71,26 @@ Bevakningen skriver ut `== MÖTET ÄR SLUT: <skäl> ==` och avslutas när Firefl
 python agents/wds/tools/meeting-live/live.py transcript .wds/live/<fil>.jsonl
 ```
 
+### Lokal reserv (fel språk, eller Fireflies spelar inte in)
+
+Lyssnar på datorns ljud ut och mikrofonen och skriver ut lokalt med Whisper var 15:e sekund, i samma format. Ljudet lämnar aldrig datorn. Windows. Svenska använder KB-Whisper, som laddas ned första gången (några minuter). Kör i bakgrunden och bevaka filen med `watch` som vanligt:
+
+```bash
+python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-lokal.jsonl --them "<de andra>" --me "<personen>" --lang sv
+```
+
+Talarna skiljs bara åt som "de andra" och "jag". Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
+
+### Arkivera
+
+Efter mötet: hela mötet till repots mötesarkiv, sammanfogat från alla filer som hör till mötet (flera anslutningar, en ny inspelning på rätt språk, den lokala reserven). Det färdiga transkriptet hämtas från Fireflies när det finns, eftersom det är renare än liveutskriften; annars används liveutskriften.
+
+```bash
+FIREFLIES_API_KEY="$(bw get password 'Fireflies API Key')" python agents/wds/tools/meeting-live/live.py archive .wds/live/<fil>.jsonl [<fil>.jsonl …] --out communication/meetings --lang sv --title "<mötets namn>"
+```
+
+Det skriver `communication/meetings/<datum>-<titel>.md` och lägger till en rad i `communication/meetings.md` (datum, möte, längd, Fireflies-id, transkript, sammanfattning). Sammanfattningskolumnen fylls i när sammanfattningen är skriven. Fireflies färdiga transkript kan dröja några minuter efter mötet; `--no-fetch` arkiverar liveutskriften direkt.
+
 ### Avsluta
 
 Stoppa bakgrundsprocessen. Joinen skriver själv en slutrad när mötet inte längre pågår i Fireflies (kontrolleras varje minut).
@@ -74,10 +103,12 @@ En rad per händelse, i ordning:
 {"event": "joined", "title": "…", "meeting_id": "…", "participants": ["…"], "at": "…"}
 {"n": 1, "start": 3.2, "speaker": "Anna", "text": "…", "seed": true}
 {"n": 2, "start": 61.0, "speaker": "Mårten", "text": "…", "id": "<chunk_id>"}
+{"event": "reconnecting", "at": "…"}
+{"event": "filled", "count": 4, "at": "…"}
 {"event": "ended", "reason": "…", "at": "…"}
 ```
 
-`seed: true` är repliker från före anslutningen. `start` är sekunder från mötets början.
+`seed: true` är repliker från före anslutningen, `fill: true` repliker som fyllde en lucka. `start` är sekunder från mötets början.
 
 ## Fel
 
@@ -87,7 +118,8 @@ En rad per händelse, i ordning:
 | `Inga pågående möten` | "Fireflies spelar inte in just nu. Starta inspelningen, så går jag med om 30 sekunder." |
 | `auth failed` | Nyckeln är fel eller har gått ut. Kontrollera Bitwarden-posten. |
 | `Paketet saknas` | Installera `python-socketio[client]` och gå med igen. |
-| Bakgrundsprocessen avslutas oväntat | Läs dess utskrift, och gå med igen. Den nya filen får en ny tid i namnet; läs den gamla med `transcript`. |
+| Bakgrundsprocessen avslutas oväntat | Läs dess utskrift och fortsätt i samma fil med `join --continue <fil>`. |
+| Texten är obegriplig eller på fel språk | Fireflies har fel språkinställning. Säg det direkt, starta den lokala reserven, och be personen byta språk i Fireflies (det ger ett nytt mötes-id; gå med i det också). `archive` tar med alla delarna. |
 
 Fördröjningen från tal till fil är några sekunder (Fireflies taligenkänning), plus bevakningens intervall.
 
