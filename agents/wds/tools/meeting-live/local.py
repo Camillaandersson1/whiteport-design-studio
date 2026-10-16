@@ -7,7 +7,7 @@ Lyssnar på två källor samtidigt: datorns ljud ut (loopback, de andra i mötet
 Var 15:e sekund skrivs det som sagts ut och läggs i en jsonl-fil i samma format som live.py,
 så att `live.py watch <fil>` bevakar den och `live.py archive` tar med den.
 
-    python local.py <utfil.jsonl> [--them "De andra"] [--me "Mårten Angner"] [--lang sv] [--chunk 15]
+    python local.py <utfil.jsonl> [--them "De andra"] [--me "Mårten Angner"] [--lang sv | auto] [--chunk 15]
 
 Windows (WASAPI loopback). Kräver: python -m pip install pyaudiowpatch faster-whisper numpy
 Svenska använder KB-Whisper (KBLab/kb-whisper-small), som laddas ned första gången.
@@ -28,7 +28,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("out")
 ap.add_argument("--them", default="De andra")
 ap.add_argument("--me", default="Jag")
-ap.add_argument("--lang", default="sv")
+ap.add_argument("--lang", default="sv", help="sv, en … eller auto: språket upptäcks för varje bit")
 ap.add_argument("--chunk", type=float, default=15)
 ap.add_argument("--model", default=None, help="standard: KBLab/kb-whisper-small för svenska, annars small")
 a = ap.parse_args()
@@ -90,13 +90,15 @@ try:
             audio = to16k(parts)
             if len(audio) == 0 or np.sqrt(np.mean(audio ** 2)) < 0.003:  # tystnad
                 continue
-            segs, _ = model.transcribe(audio, language=a.lang, vad_filter=True, beam_size=1)
-            rows += [(start + s.start, name, s.text.strip()) for s in segs if s.text.strip()]
+            # auto: språket upptäcks för varje bit, för möten som byter språk.
+            segs, info = model.transcribe(audio, language=None if a.lang == "auto" else a.lang, vad_filter=True, beam_size=1)
+            rows += [(start + s.start, name, s.text.strip(), info.language) for s in segs if s.text.strip()]
         rows.sort()
         with open(a.out, "a", encoding="utf-8") as fh:
-            for st, name, text in rows:
+            for st, name, text, lang in rows:
                 n += 1
-                fh.write(json.dumps({"n": n, "start": round(st, 1), "speaker": name, "text": text}, ensure_ascii=False) + "\n")
+                fh.write(json.dumps({"n": n, "start": round(st, 1), "speaker": name, "text": text, "lang": lang},
+                                    ensure_ascii=False) + "\n")
 except KeyboardInterrupt:
     pass
 finally:

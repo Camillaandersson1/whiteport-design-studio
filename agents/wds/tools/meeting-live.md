@@ -20,6 +20,7 @@ Strömmen och bevakningen är två processer. Bevakningen kan startas om när so
 
 | Vad | Var |
 |---|---|
+| Fireflies språk | **Multi-Language på alla möten** (Mårten, 2026-10-17), i Fireflies inställningar: flera språk i samma möte, beta. Språket går inte att sätta i kalenderinbjudan. |
 | Fireflies-nyckeln | Bitwarden-posten `Fireflies API Key`, lösenordsfältet. Hämtas vid körning, skrivs aldrig till fil. |
 | Python-paket | `python -m pip install "python-socketio[client]"` (en gång per dator). Den lokala reserven: `pyaudiowpatch faster-whisper numpy`. |
 | Mötesfilen | `.wds/live/` i repots rot, arbetsmaterial under mötet. `.wds/` är gitignorerad. |
@@ -79,7 +80,17 @@ Lyssnar på datorns ljud ut och mikrofonen och skriver ut lokalt med Whisper var
 python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-lokal.jsonl --them "<de andra>" --me "<personen>" --lang sv
 ```
 
-Talarna skiljs bara åt som "de andra" och "jag". Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
+`--lang auto` upptäcker språket för varje bit, för möten som byter språk.
+
+Uppmätt 2026-10-17 på Mårtens dator (8 kärnor, ingen grafikkort-acceleration) med ett svenskt röstmeddelande på 131 sekunder:
+
+| Modell | Tid mot realtid | Svenska |
+|---|---|---|
+| `KBLab/kb-whisper-small` (`--lang sv`, standard) | 0,17 | Bäst: namn och ord rätt |
+| `small` (`--lang auto`) | 0,18 | Upptäcker svenska, men fler fel |
+| `medium` (`--lang auto`) | 0,49 | Inte bättre än KB-Whisper; med två ljudkällor nära realtid |
+
+Båda små modellerna hinner med live med god marginal. Talarna skiljs bara åt som "de andra" och "jag". Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
 
 ### Arkivera
 
