@@ -59,7 +59,7 @@ FIREFLIES_API_KEY="$(bw get password 'Fireflies API Key')" python agents/wds/too
 **Claude Code:** Monitor med kommandot nedan och `timeout_ms: 1800000`. Varje utskrift är en klump nya repliker. När bevakningen löper ut efter 30 minuter startas den igen med samma kommando.
 
 ```bash
-python agents/wds/tools/meeting-live/live.py watch .wds/live/<fil>.jsonl --every 30
+python agents/wds/tools/meeting-live/live.py watch .wds/live/<fil>.jsonl --every 10
 ```
 
 Bevakningen skriver ut `== MÖTET ÄR SLUT: <skäl> ==` och avslutas när Fireflies slutar spela in, och `== FEL: … ==` om något går fel.
@@ -74,7 +74,7 @@ python agents/wds/tools/meeting-live/live.py transcript .wds/live/<fil>.jsonl
 
 ### Lokal utskrift, utan bot (fel språk, Fireflies spelar inte in, eller allt annat ljud)
 
-Lyssnar på datorns ljud ut, alltså det personen hör, och mikrofonen, och skriver ut lokalt med Whisper var 15:e sekund, i samma format. Ljudet lämnar aldrig datorn. Ingen bot går med i mötet, så det fungerar oavsett vem som bjudit in och på vilken plattform. Med `--no-mic` bara datorns ljud: videor, webbinarier, poddar. Windows. Svenska använder KB-Whisper, som laddas ned första gången (några minuter). Kör i bakgrunden och bevaka filen med `watch` som vanligt:
+Lyssnar på datorns ljud ut, alltså det personen hör, och mikrofonen, och skriver ut lokalt med Whisper när talaren pausar, i samma format. Ljudet lämnar aldrig datorn. Ingen bot går med i mötet, så det fungerar oavsett vem som bjudit in och på vilken plattform. Med `--no-mic` bara datorns ljud: videor, webbinarier, poddar. Windows. Svenska använder KB-Whisper, som laddas ned första gången (några minuter). Kör i bakgrunden och bevaka filen med `watch` som vanligt:
 
 ```bash
 python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-lokal.jsonl --them "<de andra>" --me "<personen>" --lang sv
@@ -90,7 +90,9 @@ Uppmätt 2026-10-17 på Mårtens dator (8 kärnor, ingen grafikkort-acceleration
 | `small` (`--lang auto`) | 0,18 | Upptäcker svenska, men fler fel |
 | `medium` (`--lang auto`) | 0,49 | Inte bättre än KB-Whisper; med två ljudkällor nära realtid |
 
-Båda små modellerna hinner med live med god marginal. Talarna skiljs bara åt som "de andra" och "jag". ```bash
+Båda små modellerna hinner med live med god marginal.
+
+**Fördröjning:** ljudet klipps vid pauser (0,5 s) och senast efter 8 sekunder (`--pause`, `--max`). Mätt med samma inspelning matad i realtid: text **4 sekunder** efter första ordet (median), högst 8,4. Bitar om 15 sekunder gav 15 till 20. Ett lägre tak (6 s) klipper oftare mitt i meningar. Riktig strömning ord för ord tolkar om ljudet varje sekund och räcker troligen inte för två källor på en dator utan grafikkort-acceleration. Talarna skiljs bara åt som "de andra" och "jag". ```bash
 python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-<titel>.jsonl --no-mic --them "<videon>"
 ```
 
