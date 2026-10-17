@@ -16,4 +16,5 @@
   --wds-font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --wds-font-mono: "Cascadia Mono", Consolas, "SFMono-Regular", monospace;
   --wds-radius: 6px;
+  --wds-heading-weight: 600;
 }

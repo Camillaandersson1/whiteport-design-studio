@@ -2,7 +2,7 @@
 name: theme
 source: wds
 type: script
-description: The look of everything WDS renders (trigger map, persona pages, folder presentations). A neutral default, overridden by the client's brand tokens. The module is theme/theme.py; the default is theme/neutral.css.
+description: The look of everything WDS renders (trigger map, persona pages, folder presentations) and of markdown in VS Code. A neutral default, overridden by the client's brand tokens. The module is theme/theme.py; the default is theme/neutral.css.
 used_by: [trigger-map, folder-presentation]
 ---
 
@@ -33,6 +33,7 @@ Rendered artefacts take their look from the client's brand, so a trigger map or 
 | `--wds-positive`, `--wds-negative` | Forces toward and away from |
 | `--wds-font-display`, `--wds-font-body`, `--wds-font-mono` | Headings, body, labels and figures |
 | `--wds-radius` | Corner radius |
+| `--wds-heading-weight` | Weight of headings (600 by default; 300 for a light brand like Whiteport) |
 
 Dark blocks (such as the product on the trigger map) use ink with paper text, so contrast holds whatever the accent is.
 
@@ -57,6 +58,17 @@ Dark blocks (such as the product on the trigger map) use ink with paper text, so
 ```
 
 Write it from the brand's `design-tokens.md` when the first artefact is rendered for the client, and keep the two in step.
+
+## Markdown in VS Code in the brand's look
+
+With the Markdown Editor extension (zaaack) as the editor for `.md`, markdown is edited like a document. This writes the brand's look into the repo's `.vscode/settings.json` (`markdown-editor.customCss`), keeping every other setting:
+
+```bash
+python agents/wds/tools/theme/theme.py vscode <repo>                     # the brand found in the repo, or neutral
+python agents/wds/tools/theme/theme.py vscode <repo> --theme <tokens.css>  # a brand that lives in another repo
+```
+
+Only fonts loaded from the web reach the editor; a brand whose fonts are local files needs an `@import` from a font service in `tokens.css` for the editor. Run it again when the tokens change. Whether `.vscode/` is committed is the repo's choice; many keep it out of git.
 
 ## Use in a script
 
