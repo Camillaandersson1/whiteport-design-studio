@@ -74,7 +74,11 @@ python agents/wds/tools/meeting-live/live.py transcript .wds/live/<fil>.jsonl
 
 ### Lokal utskrift, utan bot (fel språk, Fireflies spelar inte in, eller allt annat ljud)
 
-Lyssnar på datorns ljud ut, alltså det personen hör, och mikrofonen, och skriver ut lokalt med Whisper när talaren pausar, i samma format. Ljudet lämnar aldrig datorn. Ingen bot går med i mötet, så det fungerar oavsett vem som bjudit in och på vilken plattform. Med `--no-mic` bara datorns ljud: videor, webbinarier, poddar. Windows. Svenska använder KB-Whisper, som laddas ned första gången (några minuter). Kör i bakgrunden och bevaka filen med `watch` som vanligt:
+Lyssnar på datorns ljud ut, alltså det personen hör, och mikrofonen, och skriver ut lokalt med Whisper när talaren pausar, i samma format. Ljudet lämnar aldrig datorn. Ingen bot går med i mötet, så det fungerar oavsett vem som bjudit in och på vilken plattform. Med `--no-mic` bara datorns ljud: videor, webbinarier, poddar.
+
+**De andra ska veta om det.** En bot syns i mötet; den lokala utskriften syns inte. Använd den bara när alla i samtalet vet att det skrivs ut, och aldrig i privata samtal som inte gäller arbetet. Börjar ett samtal handla om något annat, stoppa utskriften.
+
+Whisper hittar ibland på text i brus och korta ljud (".", "000", `<|nospeech|>`, påhittade ord). Sådant sorteras bort med modellens egna mått på om det var tal och hur säkra orden är; i provet behölls alla 32 riktiga yttranden. Windows. Svenska använder KB-Whisper, som laddas ned första gången (några minuter). Kör i bakgrunden och bevaka filen med `watch` som vanligt:
 
 ```bash
 python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-lokal.jsonl --them "<de andra>" --me "<personen>" --lang sv

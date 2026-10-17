@@ -23,6 +23,7 @@ import argparse
 import datetime
 import io
 import json
+import re
 import sys
 import threading
 import time
@@ -37,6 +38,19 @@ def to16k(rate, x):
         return x.astype(np.float32)
     m = int(len(x) * RATE / rate)
     return np.interp(np.linspace(0, len(x) - 1, m), np.arange(len(x)), x).astype(np.float32)
+
+
+def is_speech(seg, no_speech=0.6, logprob=-1.0):
+    """Whisper hittar ibland på text i brus och korta ljud. Släpp bara igenom det modellen själv tror är tal.
+
+    Bort: tomma rader och skiljetecken ("."), Whispers interna märken ("<|nospeech|>"), rader utan
+    bokstäver ("000"), och det modellen bedömer som troligen inte tal eller som osäkra ord."""
+    text = seg.text.strip()
+    if not text or "<|" in text or not re.search(r"[^\W\d_]", text):
+        return False
+    if getattr(seg, "no_speech_prob", 0) > no_speech:
+        return False
+    return getattr(seg, "avg_logprob", 0) > logprob
 
 
 class Segmenter:
@@ -149,7 +163,7 @@ def main():
         nonlocal n
         for start, audio in segments:
             segs, info = model.transcribe(audio, language=None if a.lang == "auto" else a.lang, vad_filter=True, beam_size=1)
-            text = " ".join(s.text.strip() for s in segs if s.text.strip())
+            text = " ".join(s.text.strip() for s in segs if is_speech(s))
             if text:
                 n += 1
                 write({"n": n, "start": round(start, 1), "speaker": name, "text": text, "lang": info.language})
