@@ -11,6 +11,7 @@ Ljudet klipps vid naturliga pauser, när någon har pratat klart, och skrivs ut 
 blir ungefär yttrandets längd plus en sekund. Ett långt yttrande klipps senast efter --max sekunder.
 Raderna hamnar i samma jsonl-format som live.py, så `live.py watch` och `live.py archive` fungerar.
 
+    python local.py --dir <mapp> [--screen] [--them "De andra"] [--me "Mårten Angner"]   # en inspelning, allt i mappen
     python local.py <utfil.jsonl> [--them "De andra"] [--me "Mårten Angner"] [--lang sv | auto]
     python local.py <utfil.jsonl> --no-mic --them "Videon"   # bara datorns ljud
 
@@ -107,10 +108,60 @@ class Segmenter:
         self.speech, self.silence = False, 0.0
 
 
+class AudioFile:
+    """Ljudet från en källa som WAV (16 kHz, mono). Tystnad fylls i efter klockan, eftersom Windows inte
+    levererar något från högtalarutgången när inget spelas; då har ljud, utskrift och skärm samma tid."""
+
+    def __init__(self, path):
+        import wave
+        self.w = wave.open(str(path), "wb")
+        self.w.setnchannels(1)
+        self.w.setsampwidth(2)
+        self.w.setframerate(RATE)
+        self.written = 0
+
+    def add(self, x, now):
+        gap = int(now * RATE) - len(x) - self.written
+        if gap > RATE // 5:  # mer än 0,2 s som saknas: fyll med tystnad
+            self.w.writeframes(np.zeros(gap, dtype=np.int16).tobytes())
+            self.written += gap
+        self.w.writeframes((np.clip(x, -1, 1) * 32767).astype(np.int16).tobytes())
+        self.written += len(x)
+
+    def close(self, now):
+        rest = int(now * RATE) - self.written  # tystnad fram till stoppet, så att filen är lika lång som inspelningen
+        if rest > 0:
+            self.w.writeframes(np.zeros(rest, dtype=np.int16).tobytes())
+        self.w.close()
+
+
+def frames_loop(folder, write, t0, stop, every=5.0, change=4.0):
+    """En bild av skärmen när den har ändrats, kontrollerat var femte sekund. Raden i utskriften pekar på bilden."""
+    from PIL import Image, ImageGrab
+    folder.mkdir(exist_ok=True)
+    last = None
+    while not stop.wait(every):
+        try:
+            img = ImageGrab.grab()
+        except Exception:
+            continue
+        small = np.asarray(img.convert("L").resize((96, 54)), dtype=np.float32)
+        if last is None or np.mean(np.abs(small - last)) > change:
+            last = small
+            now = time.time() - t0
+            name = f"{int(now) // 60:02d}-{int(now) % 60:02d}.jpg"
+            if img.width > 1600:
+                img = img.resize((1600, round(img.height * 1600 / img.width)), Image.LANCZOS)
+            img.convert("RGB").save(folder / name, quality=82)
+            write({"event": "frame", "start": round(now, 1), "file": str(folder / name)})
+
+
 def main():
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
     ap = argparse.ArgumentParser()
-    ap.add_argument("out")
+    ap.add_argument("out", nargs="?", help="utskriftens jsonl-fil; med --dir blir den <dir>/transcript.jsonl")
+    ap.add_argument("--dir", help="inspelningens mapp: utskrift, ljud per kanal, skärmvideo och bilder")
+    ap.add_argument("--screen", action="store_true", help="spela in skärmen som video och spara en bild när den ändras")
     ap.add_argument("--them", default="De andra")
     ap.add_argument("--me", default="Jag")
     ap.add_argument("--lang", default="sv", help="sv, en … eller auto: språket upptäcks för varje yttrande")
@@ -120,6 +171,13 @@ def main():
     ap.add_argument("--threshold", type=float, default=0.006, help="ljudnivå som räknas som tal")
     ap.add_argument("--model", default=None, help="standard: KBLab/kb-whisper-small för svenska, annars small")
     a = ap.parse_args()
+    from pathlib import Path
+    folder = Path(a.dir) if a.dir else None
+    if folder:
+        folder.mkdir(parents=True, exist_ok=True)
+        a.out = str(folder / "transcript.jsonl")
+    if not a.out:
+        ap.error("ange en utfil eller --dir")
 
     try:
         import pyaudiowpatch as pyaudio
@@ -130,12 +188,15 @@ def main():
 
     model_name = a.model or ("KBLab/kb-whisper-small" if a.lang == "sv" else "small")
     pa = pyaudio.PyAudio()
-    sources = [(a.them, pa.get_default_wasapi_loopback())] + ([] if a.no_mic else [(a.me, pa.get_default_input_device_info())])
-    incoming = {name: [] for name, _ in sources}
-    segmenters = {name: Segmenter(a.threshold, a.pause, a.max) for name, _ in sources}
+    sources = [(a.them, "them", pa.get_default_wasapi_loopback())]
+    if not a.no_mic:
+        sources.append((a.me, "me", pa.get_default_input_device_info()))
+    incoming = {name: [] for name, _, _ in sources}
+    segmenters = {name: Segmenter(a.threshold, a.pause, a.max) for name, _, _ in sources}
+    audio = {name: AudioFile(folder / f"{role}.wav") for name, role, _ in sources} if folder else {}
     lock = threading.Lock()
     streams = []
-    for name, dev in sources:
+    for name, _, dev in sources:
         rate, ch = int(dev["defaultSampleRate"]), max(1, min(2, dev["maxInputChannels"]))
 
         def cb(data, frames, info, status, name=name, ch=ch, rate=rate):
@@ -150,44 +211,80 @@ def main():
 
     model = WhisperModel(model_name, device="cpu", compute_type="int8")
     n, t0 = 0, time.time()
+    wlock = threading.Lock()
 
     def write(row):
-        with open(a.out, "a", encoding="utf-8") as fh:
+        with wlock, open(a.out, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-    write({"event": "joined", "title": f"Lokal utskrift ({model_name})", "participants": [s for s, _ in sources],
-           "at": datetime.datetime.now().isoformat(timespec="seconds")})
-    print(f"Fil: {a.out}. Skriver ut när talaren pausar. Ctrl+C avslutar.")
+    write({"event": "joined", "title": f"Lokal utskrift ({model_name})", "participants": [s for s, _, _ in sources],
+           "channels": {role: name for name, role, _ in sources}, "at": datetime.datetime.now().isoformat(timespec="seconds")})
+
+    # Datorn får inte somna medan inspelningen pågår, även om ingen rör den. Skärmen får släckas.
+    keep_awake = None
+    if sys.platform == "win32":
+        import ctypes
+        keep_awake = ctypes.windll.kernel32.SetThreadExecutionState
+        keep_awake(0x80000000 | 0x00000001)  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
+
+    stop = threading.Event()
+    screen = None
+    if folder and a.screen:
+        import subprocess
+        screen = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "gdigrab", "-framerate", "5", "-i", "desktop",
+                                   "-vf", "scale=-2:1080", "-c:v", "libx264", "-preset", "veryfast", "-crf", "30",
+                                   "-pix_fmt", "yuv420p", str(folder / "screen.mp4")], stdin=subprocess.PIPE)
+        threading.Thread(target=frames_loop, args=(folder / "frames", write, t0, stop), daemon=True).start()
+        print("Skärmen spelas in: screen.mp4, och en bild i frames/ när skärmen ändras.")
+    print(f"Fil: {a.out}. Skriver ut när talaren pausar. Stoppa med en fil som heter STOP i mappen, eller Ctrl+C.")
 
     def transcribe(name, segments):
         nonlocal n
-        for start, audio in segments:
-            segs, info = model.transcribe(audio, language=None if a.lang == "auto" else a.lang, vad_filter=True, beam_size=1)
+        for start, x in segments:
+            segs, info = model.transcribe(x, language=None if a.lang == "auto" else a.lang, vad_filter=True, beam_size=1)
             text = " ".join(s.text.strip() for s in segs if is_speech(s))
             if text:
                 n += 1
                 write({"n": n, "start": round(start, 1), "speaker": name, "text": text, "lang": info.language})
 
+    stopfile = (folder / "STOP") if folder else None
     try:
-        while True:
+        while not (stopfile and stopfile.exists()):
             time.sleep(0.2)
             with lock:
                 taken = {k: v for k, v in incoming.items()}
                 for k in incoming:
                     incoming[k] = []
+            now = time.time() - t0
             for name, parts in taken.items():
                 if parts:
-                    transcribe(name, segmenters[name].feed(np.concatenate(parts), time.time() - t0))
+                    x = np.concatenate(parts)
+                    if name in audio:
+                        audio[name].add(x, now)
+                    transcribe(name, segmenters[name].feed(x, now))
     except KeyboardInterrupt:
         pass
     finally:
+        stop.set()
         for s in streams:
             s.stop_stream()
             s.close()
         pa.terminate()
         for name, seg in segmenters.items():
             transcribe(name, seg.flush(time.time() - t0))
+        for f in audio.values():
+            f.close(time.time() - t0)
+        if screen:
+            try:
+                screen.communicate(b"q", timeout=20)  # ffmpeg avslutar videon ordentligt
+            except Exception:
+                screen.kill()
+        if stopfile and stopfile.exists():
+            stopfile.unlink()
+        if keep_awake:
+            keep_awake(0x80000000)  # tillbaka till vanligt: datorn får somna igen
         write({"event": "ended", "reason": "stoppad", "at": datetime.datetime.now().isoformat(timespec="seconds")})
+        print("Inspelningen är stoppad.")
 
 
 if __name__ == "__main__":

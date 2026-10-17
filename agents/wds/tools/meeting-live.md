@@ -3,7 +3,7 @@ name: meeting-live
 source: wds
 type: script
 description: Strömmar ett pågående Fireflies-möte till en lokal fil och väcker agenten med nya repliker. Allt körs på datorn, utan server och utan MCP. Skriptet ligger i meeting-live/live.py.
-used_by: [live-meeting]
+used_by: [live-meeting, recording]
 ---
 
 # Tool: meeting-live
@@ -101,6 +101,31 @@ python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-<titel>.jsonl --no
 ```
 
 Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
+
+### Inspelning: ljud, skärm och grundlig utskrift efteråt
+
+Allt i en mapp: utskriften live, ljudet per kanal och, med `--screen`, skärmen som video och en bild när skärmen ändras. Skillen [recording](../skills/recording/SKILL.md) beskriver flödet.
+
+```bash
+python agents/wds/tools/meeting-live/local.py --dir "<inspelningens mapp>" [--screen] --them "<de andra>" --me "<personen>"
+```
+
+| Fil | Innehåll |
+|---|---|
+| `transcript.jsonl` | Liveutskriften, med en rad `{"event": "frame", "file": …}` för varje ny bild |
+| `them.wav`, `me.wav` | Ljudet per kanal, 16 kHz. Lika långt som inspelningen: tystnad fylls i efter klockan, också när ingen säger något |
+| `screen.mp4` | Skärmen, 5 bilder per sekund, 1080 p (`--screen`) |
+| `frames/<mm-ss>.jpg` | En bild när skärmen har ändrats, kontrollerat var femte sekund (`--screen`) |
+
+- **Stoppa** genom att lägga en fil som heter `STOP` i mappen. Då avslutas ljud och video ordentligt; en process som avbryts hårt lämnar dem trasiga.
+- **Datorn hålls vaken** under inspelningen, så den fortsätter när ingen rör datorn. Stängs locket följer Windows inställningen för locket.
+- **Den grundliga utskriften** efteråt: större modell, hela ljudet i ett svep, grundligare sökning, och ekot från högtalarna borttaget genom att kanalerna jämförs. Den skriver `final.jsonl`, som `archive` tar:
+
+```bash
+python agents/wds/tools/meeting-live/refine.py "<inspelningens mapp>" [--model KBLab/kb-whisper-medium]
+```
+
+KB-Whisper medium laddas ned första gången (cirka 1,5 GB). Utan grafikkort-acceleration tar den ungefär halva samtalets längd per kanal.
 
 ### Arkivera
 
