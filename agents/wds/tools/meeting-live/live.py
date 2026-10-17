@@ -317,6 +317,8 @@ def line_text(row):
     ev = row.get("event")
     if ev in ("joined", "rejoined"):
         return f"== Ansluten: {row.get('title')} =="
+    if ev == "frame":
+        return f"== Bild {clock(row.get('start'))}: {row.get('file')} =="
     if ev == "reconnecting":
         return "== Anslutningen föll, ansluter igen =="
     if ev == "filled":
