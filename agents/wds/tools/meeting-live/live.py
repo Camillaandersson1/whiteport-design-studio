@@ -10,7 +10,7 @@ och agenten bevakar filen med watch.
     python live.py join --continue <fil>         # fortsätt i samma fil efter ett avbrott, fyller luckan
     python live.py watch <fil> [--every 30]      # skriv ut nya repliker i klumpar, slutar när mötet är slut
     python live.py transcript <fil>              # hela mötet som läsbar text
-    python live.py archive <fil> [<fil> …] [--out communication/meetings] [--lang sv]
+    python live.py archive <fil> [<fil> …] [--out communication/meetings] [--lang sv] [--media <mediamappen>]
                                                  # hela mötet till repots mötesarkiv, med registret
 
 join återansluter själv om Fireflies tappar anslutningen, i samma fil, och fyller luckan ur
@@ -445,6 +445,9 @@ def cmd_archive():
     doc = [f"# {title}, {day}", ""]
     doc.append(" · ".join(x for x in (span, f"{L['speakers']}: {', '.join(speakers)}" if speakers else "",
                                       ", ".join(f"Fireflies `{m}`" for m in meeting_ids)) if x))
+    media = arg("--media")
+    if media:
+        doc += ["", f"Media: `{media}`"]
     doc += ["", L["note"], "", "---", ""]
     for i, (head, source, lines) in enumerate(parts, 1):
         if len(parts) > 1:
@@ -463,7 +466,7 @@ def cmd_archive():
     text = index.read_text(encoding="utf-8")
     if name not in text:
         length = f"{minutes} min" if minutes else ""
-        ids = " ".join(f"`{m}`" for m in meeting_ids)
+        ids = " ".join(f"`{m}`" for m in meeting_ids) or (f"media: `{media}`" if media else "")
         row = f"| {day} | {title} | {length} | {ids} | [{name}]({out.name}/{name}) |  |"
         index.write_text(text.rstrip("\n") + "\n" + row + "\n", encoding="utf-8", newline="\n")
         print(f"Ny rad i {index}. Fyll i sammanfattningen när den är skriven.")
