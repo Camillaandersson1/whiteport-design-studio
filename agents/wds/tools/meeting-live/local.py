@@ -3,11 +3,14 @@
 local.py: ett pågående samtal utskrivet lokalt med Whisper, som reserv när Fireflies inte klarar
 språket eller inte spelar in. Ljudet lämnar aldrig datorn. Del av WDS (agents/wds/tools/meeting-live.md).
 
-Lyssnar på två källor samtidigt: datorns ljud ut (loopback, de andra i mötet) och mikrofonen (du).
+Lyssnar på två källor samtidigt: datorns ljud ut (loopback, det du hör) och mikrofonen (du).
+Ingen bot går med i mötet, så det fungerar oavsett vem som bjudit in och på vilken plattform.
+Med --no-mic bara datorns ljud, för videor, webbinarier och poddar.
 Var 15:e sekund skrivs det som sagts ut och läggs i en jsonl-fil i samma format som live.py,
 så att `live.py watch <fil>` bevakar den och `live.py archive` tar med den.
 
     python local.py <utfil.jsonl> [--them "De andra"] [--me "Mårten Angner"] [--lang sv | auto] [--chunk 15]
+    python local.py <utfil.jsonl> --no-mic --them "Videon"   # bara datorns ljud: video, webbinarium, podd
 
 Windows (WASAPI loopback). Kräver: python -m pip install pyaudiowpatch faster-whisper numpy
 Svenska använder KB-Whisper (KBLab/kb-whisper-small), som laddas ned första gången.
@@ -30,6 +33,7 @@ ap.add_argument("--them", default="De andra")
 ap.add_argument("--me", default="Jag")
 ap.add_argument("--lang", default="sv", help="sv, en … eller auto: språket upptäcks för varje bit")
 ap.add_argument("--chunk", type=float, default=15)
+ap.add_argument("--no-mic", action="store_true", help="bara datorns ljud, till exempel en video eller ett webbinarium")
 ap.add_argument("--model", default=None, help="standard: KBLab/kb-whisper-small för svenska, annars small")
 a = ap.parse_args()
 
@@ -43,7 +47,7 @@ except ImportError:
 
 model_name = a.model or ("KBLab/kb-whisper-small" if a.lang == "sv" else "small")
 pa = pyaudio.PyAudio()
-sources = [(a.them, pa.get_default_wasapi_loopback()), (a.me, pa.get_default_input_device_info())]
+sources = [(a.them, pa.get_default_wasapi_loopback())] + ([] if a.no_mic else [(a.me, pa.get_default_input_device_info())])
 buffers = {name: [] for name, _ in sources}
 lock = threading.Lock()
 streams = []
@@ -63,7 +67,7 @@ for name, dev in sources:
 model = WhisperModel(model_name, device="cpu", compute_type="int8")
 t0, n = time.time(), 0
 with open(a.out, "a", encoding="utf-8") as fh:
-    fh.write(json.dumps({"event": "joined", "title": f"Lokal utskrift ({model_name})", "participants": [a.them, a.me],
+    fh.write(json.dumps({"event": "joined", "title": f"Lokal utskrift ({model_name})", "participants": [n for n, _ in sources],
                          "at": datetime.datetime.now().isoformat(timespec="seconds")}, ensure_ascii=False) + "\n")
 print(f"Fil: {a.out}. Skriver ut var {a.chunk:.0f}:e sekund. Ctrl+C avslutar.")
 

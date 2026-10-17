@@ -72,9 +72,9 @@ Bevakningen skriver ut `== MÖTET ÄR SLUT: <skäl> ==` och avslutas när Firefl
 python agents/wds/tools/meeting-live/live.py transcript .wds/live/<fil>.jsonl
 ```
 
-### Lokal reserv (fel språk, eller Fireflies spelar inte in)
+### Lokal utskrift, utan bot (fel språk, Fireflies spelar inte in, eller allt annat ljud)
 
-Lyssnar på datorns ljud ut och mikrofonen och skriver ut lokalt med Whisper var 15:e sekund, i samma format. Ljudet lämnar aldrig datorn. Windows. Svenska använder KB-Whisper, som laddas ned första gången (några minuter). Kör i bakgrunden och bevaka filen med `watch` som vanligt:
+Lyssnar på datorns ljud ut, alltså det personen hör, och mikrofonen, och skriver ut lokalt med Whisper var 15:e sekund, i samma format. Ljudet lämnar aldrig datorn. Ingen bot går med i mötet, så det fungerar oavsett vem som bjudit in och på vilken plattform. Med `--no-mic` bara datorns ljud: videor, webbinarier, poddar. Windows. Svenska använder KB-Whisper, som laddas ned första gången (några minuter). Kör i bakgrunden och bevaka filen med `watch` som vanligt:
 
 ```bash
 python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-lokal.jsonl --them "<de andra>" --me "<personen>" --lang sv
@@ -90,7 +90,11 @@ Uppmätt 2026-10-17 på Mårtens dator (8 kärnor, ingen grafikkort-acceleration
 | `small` (`--lang auto`) | 0,18 | Upptäcker svenska, men fler fel |
 | `medium` (`--lang auto`) | 0,49 | Inte bättre än KB-Whisper; med två ljudkällor nära realtid |
 
-Båda små modellerna hinner med live med god marginal. Talarna skiljs bara åt som "de andra" och "jag". Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
+Båda små modellerna hinner med live med god marginal. Talarna skiljs bara åt som "de andra" och "jag". ```bash
+python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-<titel>.jsonl --no-mic --them "<videon>"
+```
+
+Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
 
 ### Arkivera
 
