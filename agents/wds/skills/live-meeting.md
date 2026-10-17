@@ -16,7 +16,7 @@ Ett långt möte blir användbart först när det är dokumenterat, och ett pås
 <workflow id="live-meeting">
 
   <constraints>
-    - Agenten deltar bara i möten som Fireflies redan spelar in med deltagarnas vetskap.
+    - Agenten deltar bara i samtal där alla vet att det spelas in eller skrivs ut. Med Fireflies syns boten; den lokala utskriften syns inte, så där säger personen det. Privata samtal skrivs aldrig ut, och börjar ett samtal handla om något privat stoppar agenten utskriften direkt.
     - Allt körs lokalt enligt [meeting-live-toolet](../tools/meeting-live.md). Ingen server, ingen MCP.
     - **Allt material sparas.** Efter mötet arkiveras hela transkriptet i repots mötesarkiv (`communication/meetings/`, eller där `AGENTS.md` säger), och anteckningen hamnar i projektet. Ett möte som inte arkiveras kan inte användas senare, vid ett avtal, en oenighet eller en granskning. I ett publikt repo arkiveras bara anteckningen.
     - Personen sitter i ett möte. Chatten får bara korta rader: svar på frågor och motsägelser som spelar roll nu. Allt annat står i anteckningen.
