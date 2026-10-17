@@ -56,7 +56,8 @@
         "wrap": "agents/wds/skills/wrap.md",
         "handoff": "agents/wds/skills/handoff.md",
         "sync-skills": "agents/wds/skills/sync-skills.md",
-        "live-meeting": "agents/wds/skills/live-meeting.md"
+        "live-meeting": "agents/wds/skills/live-meeting.md",
+        "inspelning": "agents/wds/skills/recording/SKILL.md"
       },
       "why": "WDS-agenterna och WDS-kommandona på hela datorn, även i repon som inte är WDS-repon."
     },
