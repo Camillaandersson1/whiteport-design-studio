@@ -18,11 +18,20 @@ Hur det görs står i [meeting-live-toolet](../../tools/meeting-live.md): `local
 
 ## Starta
 
-När personen säger "starta inspelning":
+Personen ska bara behöva säga **"spela in"** (eller "starta inspelning", "livetolka mötet"). Agenten förstår direkt, kopplar upp allt och kontrollerar ljudet själv. Den enda frågan före start är vilken skärm som ska spelas in (Mårten, 2026-10-21).
 
-1. **Fråga en sak:** skärm och ljud, eller bara ljud? Bara datorns ljud (`--no-mic`) passar en video eller ett webbinarium.
-2. **Mediamappen:** `recordings:` i `.wds/me.md` säger var personens inspelningar ligger, i personens privata del av Drive. Saknas raden: föreslå en plats där, fråga en gång och skriv svaret i `.wds/me.md`. Skapa aldrig något i Drive innan platsen är bekräftad. Varje inspelning får en egen mapp: `<datum>_<tid>-<kort titel>`.
-3. **Starta** inspelningen i bakgrunden och bevaka utskriften, enligt toolet. Säg i en rad att den är igång och vad som spelas in.
+**Det här är den lokala inspelningen, inte Fireflies.** Gå aldrig med via Fireflies (`/join`, `live.py join`) när personen säger "spela in": den 21 oktober kostade det sex minuter av ett möte. Fireflies används bara när personen uttryckligen ber om det.
+
+1. **Fråga vilken skärm**, i ett meddelande med knappar: lista skärmarna som är anslutna (namn, upplösning, vilken som är huvudskärm) plus "ingen skärm". Inget annat i frågan.
+2. **Starta direkt** efter svaret: den valda skärmen, datorns ljud och mikrofonen. Bara när personen säger att det är en video eller ett webbinarium: `--no-mic`.
+   - **Mediamappen:** `recordings:` i `.wds/me.md`. Mappen får namnet `<datum>_<tid>-inspelning`; titeln kommer med i arkivet efteråt. Saknas `recordings:`: föreslå en plats i personens privata Drive, fråga en gång och skriv svaret i `.wds/me.md`. Det är den enda fråga som får komma före start.
+   - Talarna heter `--them "De andra" --me "<personens namn>"` tills vidare. Namnen sätts i arkivet.
+   - Kör i bakgrunden och starta bevakningen, enligt toolet.
+3. **Kontrollera ljudet själv** inom en minut:
+   - Vilka enheter lyssnar inspelningen på (första raderna i utskriften: `Lyssnar: … <- <enhet>`)? Är det de enheter personen faktiskt använder (headset, Bluetooth-hörlurar, högtalare)? Fel enhet: stoppa och starta om med rätt, direkt.
+   - Kommer det repliker från **båda** kanalerna? Tills den första repliken kommit från en kanal: be personen säga något kort, och kontrollera att det dyker upp. Laddas taligenkänningen första gången (några minuter), säg det i en rad; ljudet spelas in ändå.
+   - Säg sedan i **en** rad: "Inspelningen är igång: ditt ljud ✓, datorns ljud ✓, skärmen ✓." Eller vad som inte fungerar och vad du gör åt det.
+4. **Fråga sedan, i ett meddelande:** vad handlar det om, vilket projekt gäller det, och vilka är med? Svaret styr kommentarerna under mötet och var utskriften arkiveras.
 
 Alla i samtalet vet att det spelas in. Det är lagligt att spela in ett samtal man själv deltar i; i arbetssammanhang säger personen till de andra att en agent läser med, eftersom texten går vidare till en AI-tjänst. Om privata samtal bestämmer personen själv.
 
