@@ -20,7 +20,9 @@ Hur det görs står i [meeting-live-toolet](../../tools/meeting-live.md): `local
 
 Personen ska bara behöva säga **"spela in"** (eller "starta inspelning", "livetolka mötet"). Agenten förstår direkt, kopplar upp allt och kontrollerar ljudet själv. Den enda frågan före start är vilken skärm som ska spelas in (Mårten, 2026-10-21).
 
-**Det här är den lokala inspelningen, inte Fireflies.** Gå aldrig med via Fireflies (`/join`, `live.py join`) när personen säger "spela in": den 21 oktober kostade det sex minuter av ett möte. Fireflies används bara när personen uttryckligen ber om det.
+**Det här är den lokala inspelningen, inte Fireflies.** Gå aldrig med via Fireflies (`/join`, `live.py join`) när personen säger "spela in": den 21 oktober kostade det sex minuter av ett möte. Fireflies används bara när personen uttryckligen säger Fireflies.
+
+**Beslut (Mårten, 2026-10-21): vi går bort från Fireflies.** Fireflies klarar språken dåligt, och den lokala utskriften svarar mycket snabbare. Lokal inspelning är standard. En egen mötesbot för Google Meet ska byggas för de fall där en synlig deltagare behövs.
 
 1. **Fråga vilken skärm**, i ett meddelande med knappar: lista skärmarna som är anslutna (namn, upplösning, vilken som är huvudskärm) plus "ingen skärm". Inget annat i frågan.
 2. **Starta direkt** efter svaret: den valda skärmen, datorns ljud och mikrofonen. Bara när personen säger att det är en video eller ett webbinarium: `--no-mic`.
