@@ -2,11 +2,15 @@
 name: meeting-live
 source: wds
 type: script
-description: Strömmar ett pågående Fireflies-möte till en lokal fil och väcker agenten med nya repliker. Allt körs på datorn, utan server och utan MCP. Skriptet ligger i meeting-live/live.py.
+description: Spelar in och skriver ut det som hörs (och visas) på datorn lokalt med Whisper, live och grundligt efteråt, och arkiverar mötet. Fireflies bara när personen uttryckligen ber om det. Allt körs på datorn, utan server och utan MCP. Skripten ligger i meeting-live/.
 used_by: [live-meeting, recording]
 ---
 
 # Tool: meeting-live
+
+**Lokal inspelning är standard (Mårten, 2026-10-21).** Fireflies klarar språken dåligt, och den lokala utskriften svarar mycket snabbare. Använd `local.py` (avsnittet [Lokal utskrift](#lokal-utskrift-utan-bot-standard)), `refine.py` och `live.py archive`. Fireflies-delarna (`join`, `watch` mot Fireflies, hämtningen i `archive`) används bara när personen uttryckligen säger Fireflies. En egen mötesbot för Google Meet ska byggas för de fall där en synlig deltagare behövs.
+
+## Fireflies (bara på uttrycklig begäran)
 
 Fireflies realtid går direkt till en jsonl-fil på datorn. Agenten bevakar filen och får nya repliker ungefär var 30:e sekund.
 
@@ -72,7 +76,7 @@ Bevakningen skriver ut `== MÖTET ÄR SLUT: <skäl> ==` och avslutas när Firefl
 python agents/wds/tools/meeting-live/live.py transcript .wds/live/<fil>.jsonl
 ```
 
-### Lokal utskrift, utan bot (fel språk, Fireflies spelar inte in, eller allt annat ljud)
+### Lokal utskrift, utan bot (standard)
 
 Lyssnar på datorns ljud ut, alltså det personen hör, och mikrofonen, och skriver ut lokalt med Whisper när talaren pausar, i samma format. Ljudet lämnar aldrig datorn. Ingen bot går med i mötet, så det fungerar oavsett vem som bjudit in och på vilken plattform. Med `--no-mic` bara datorns ljud: videor, webbinarier, poddar.
 
@@ -108,31 +112,42 @@ python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-<titel>.jsonl --no
 - **Eko sorteras bort live.** Hörs högtalarna i mikrofonen följer mikrofonens ljudnivå datorns ljud upp och ner; sådana bitar skrivs inte ut som "jag". I provet med datorns högtalare sorterades 28 av 67 ekobitar bort, och i Visita-mötet (hörlurar) bara 1 av 59 riktiga. Med hörlurar finns inget eko. `refine.py` tar bort ekot efteråt ur sin utskrift.
 - Ligger utskriften ändå mer än `--max-lag` sekunder (30) efter talet **hoppar den över** biten. Ljudet finns kvar, och den grundliga utskriften tar den.
 
-**Statusraden.** Efter 15 sekunder och sedan varje minut skrivs en rad i utskriften, som bevakningen visar:
+**Statusraden.** Efter 10 sekunder och sedan varje minut skrivs en rad i utskriften, som bevakningen visar:
 
 ```
 == Status 05:15: De andra -20 dB, Mårten -46 dB · text 3 s efter talet · 8 s eko från högtalarna i mikrofonen ==
 ```
 
-Ljudnivån per kanal visar att ljud kommer in (0 dB är fullt, under -60 i stort sett tyst, `inget ljud` om ljudkortet inte levererat något alls). "text N s efter talet" är hur långt efter utskriften ligger. Står det att sekunder hoppades över hinner datorn inte med. Läs statusraden i stället för filstorlekarna: Drive för skrivbordet visar inte nya storlekar förrän filen stängts.
+Ljudnivån per kanal visar att ljud kommer in (0 dB är fullt, under -60 i stort sett tyst, -90 eller `inget ljud` när inget spelas). Tal från mötet ligger runt -20 dB i datorns ljud; mikrofonen runt -45 när personen är tyst. Med statusraden efter 10 sekunder kan agenten säga "ditt ljud ✓, datorns ljud ✓" utan att vänta på en replik: datorns ljud syns bara när något spelas, så be personen säga något eller spela upp något kort om den kanalen är tyst. "text N s efter talet" är hur långt efter utskriften ligger. Står det att sekunder hoppades över hinner datorn inte med. `ljudblock tappade` betyder att ljudkortet fick vänta på programmet och tappade en bit (cirka 0,1 s per block); enstaka per minut är ofarligt. Läs statusraden i stället för filstorlekarna: Drive för skrivbordet visar inte nya storlekar förrän filen stängts.
 
 **Windows får inte strypa processen.** En process som startats av en agent i bakgrunden, medan ett videomöte har förgrunden, kan strypas av Windows (EcoQoS). `local.py` stänger av det för sig själv, och skärmvideon körs med lägre prioritet än utskriften.
 
-Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
+**Datorn ska orka med mötet också.** Whisper får tre av fyra kärnor (`--threads 3`): lika snabbt som fyra, och en kärna blir kvar till ljudet, videon och mötesappen. Med alla fyra hackade uppspelningen i högtalarna under ett prov. Uppmätt 2026-10-21 med 90 sekunder mötesljud i högtalarna (processorn i snitt):
+
+| Vad som körs | Processor | Tappat |
+|---|---|---|
+| Bara uppspelningen | 17 % | – |
+| Inspelning och liveutskrift | 43 % | inga ljudblock |
+| Dessutom skärmvideo (`--screen`) | 49 % | 1 mikrofonblock |
+
+Skärmvideon kostar alltså lite: 5 bilder per sekund tar en tredjedel av en kärna, och det mesta är själva skärmfångsten (2736×1824), inte kodningen. Hårdvarukodning (`h264_qsv`) sparade bara en femtedel och används inte; 2 bilder per sekund halverar kostnaden om det skulle behövas.
 
 ### Inspelning: ljud, skärm och grundlig utskrift efteråt
 
 Allt i en mapp: utskriften live, ljudet per kanal och, med `--screen`, skärmen som video och en bild när skärmen ändras. Skillen [recording](../skills/recording/SKILL.md) beskriver flödet.
 
 ```bash
-python agents/wds/tools/meeting-live/local.py --dir "<inspelningens mapp>" [--screen] --them "<de andra>" --me "<personen>"
+python agents/wds/tools/meeting-live/local.py --list-screens
+python agents/wds/tools/meeting-live/local.py --dir "<inspelningens mapp>" [--monitor <n>] --them "<de andra>" --me "<personen>"
 ```
+
+**Välja skärm.** `--list-screens` listar de anslutna skärmarna i riktiga bildpunkter, till exempel `1. Surface Panel (\\.\DISPLAY1): 2736x1824 (huvudskärm), position 0,0`. Använd det när skillen frågar vilken skärm som ska spelas in. `--monitor <n>` spelar in bara den skärmen, både video och bilder (och slår på `--screen`). `--screen` utan `--monitor` tar alla skärmar som en bild. Ingen skärm: varken `--screen` eller `--monitor`.
 
 | Fil | Innehåll |
 |---|---|
 | `transcript.jsonl` | Liveutskriften, med en rad `{"event": "frame", "file": …}` för varje ny bild och en statusrad varje minut |
 | `them.wav`, `me.wav` | Ljudet per kanal, 16 kHz. Lika långt som inspelningen: tystnad fylls i efter klockan, också när ingen säger något. Tiden i filen är samma som `start` i utskriften och tiden i bildernas namn |
-| `screen.mp4` | Skärmen, 5 bilder per sekund, 1080 p (`--screen`) |
+| `screen.mp4` | Skärmen, 5 bilder per sekund, 1080 p (`--screen` eller `--monitor`) |
 | `frames/<mm-ss>.jpg` | En bild när skärmen har ändrats, kontrollerat var femte sekund (`--screen`) |
 
 - **Stoppa** genom att lägga en fil som heter `STOP` i mappen. Då avslutas ljud och video ordentligt; en process som avbryts hårt lämnar dem trasiga.
@@ -213,6 +228,6 @@ Fördröjningen från tal till fil är några sekunder (Fireflies taligenkännin
 | Väg | Hur | Passar |
 |---|---|---|
 | Virtuell ljudkabel | Text till tal till en virtuell mikrofon: VB-Cable och VoiceMeeter (Windows), BlackHole och Loopback (Mac). Personen väljer kabeln som mikrofon, och agenten talar i personens plats. Billigt men ömtåligt. | Eget bruk |
-| Mötesbot som tjänst | Recall.ai eller Meetstream.ai går med som egen deltagare med egen mikrofon. Betalas per minut. Att bygga själv kräver tre integrationer (Zoom, Teams, Meet). | Kunder |
+| Egen mötesbot för Google Meet | Ska byggas (beslut 2026-10-21): går med som synlig deltagare med egen mikrofon. Ersätter tanken på en köpt mötesbot (Recall.ai, Meetstream.ai). | När en synlig deltagare behövs |
 
-Börja med ljudkabeln för eget bruk och byt till en mötesbot när det ska användas av kunder (bedömt 2026-04).
+Ljudkabeln räcker för eget bruk tills Meet-boten finns.

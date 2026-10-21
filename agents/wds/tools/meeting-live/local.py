@@ -15,7 +15,8 @@ Inspelningen och utskriften går var för sig: ljudet skrivs alltid till fil, oc
 med hoppar den över det äldsta (refine.py tar det efteråt). En statusrad varje minut visar ljudnivån
 per kanal och hur långt efter utskriften ligger.
 
-    python local.py --dir <mapp> [--screen] [--them "De andra"] [--me "Mårten Angner"]   # en inspelning, allt i mappen
+    python local.py --list-screens                                                       # skärmarna att välja mellan
+    python local.py --dir <mapp> [--screen [--monitor 1]] [--them "De andra"] [--me "Mårten Angner"]   # en inspelning, allt i mappen
     python local.py <utfil.jsonl> [--them "De andra"] [--me "Mårten Angner"] [--lang sv | auto]
     python local.py <utfil.jsonl> --no-mic --them "Videon"   # bara datorns ljud
 
@@ -38,7 +39,8 @@ import time
 import numpy as np
 
 RATE = 16000
-STATUS_FIRST, STATUS_EVERY = 15, 60  # sekunder till första statusraden, och sedan mellan dem
+THREADS = 3  # kärnor till Whisper: lika snabbt som 4 (2026-10-21), och en kärna blir kvar till ljud, video och mötet
+STATUS_FIRST, STATUS_EVERY = 10, 60  # sekunder till första statusraden, och sedan mellan dem
 
 
 def to16k(rate, x):
@@ -221,17 +223,20 @@ def status_text(row):
         s += f" · {row['skipped']} s hoppades över live (kommer med i den grundliga utskriften)"
     if row.get("echo"):
         s += f" · {row['echo']} s eko från högtalarna i mikrofonen"
+    if row.get("dropped"):
+        s += " · ljudblock tappade: " + ", ".join(f"{k} {v}" for k, v in row["dropped"].items())
     return s
 
 
-def frames_loop(folder, write, t0, stop, every=5.0, change=4.0):
-    """En bild av skärmen när den har ändrats, kontrollerat var femte sekund. Raden i utskriften pekar på bilden."""
+def frames_loop(folder, write, t0, stop, bbox=None, every=5.0, change=4.0):
+    """En bild av skärmen när den har ändrats, kontrollerat var femte sekund. Raden i utskriften pekar på bilden.
+    bbox: den valda skärmen (vänster, topp, höger, botten); annars huvudskärmen."""
     from PIL import Image, ImageGrab
     folder.mkdir(exist_ok=True)
     last = None
     while not stop.wait(every):
         try:
-            img = ImageGrab.grab()
+            img = ImageGrab.grab(bbox=bbox, all_screens=bool(bbox))
         except Exception:
             continue
         small = np.asarray(img.convert("L").resize((96, 54)), dtype=np.float32)
@@ -243,6 +248,43 @@ def frames_loop(folder, write, t0, stop, every=5.0, change=4.0):
                 img = img.resize((1600, round(img.height * 1600 / img.width)), Image.LANCZOS)
             img.convert("RGB").save(folder / name, quality=82)
             write({"event": "frame", "start": round(now, 1), "file": str(folder / name)})
+
+
+def screens():
+    """De anslutna skärmarna i Windows ordning: nummer, namn, position och storlek i riktiga bildpunkter, huvudskärm."""
+    import ctypes
+    from ctypes import wintypes
+    try:
+        ctypes.windll.shcore.SetProcessDpiAwareness(2)  # riktiga bildpunkter, inte skalade
+    except Exception:
+        pass
+
+    class MonitorInfo(ctypes.Structure):
+        _fields_ = [("cbSize", wintypes.DWORD), ("rcMonitor", wintypes.RECT), ("rcWork", wintypes.RECT),
+                    ("dwFlags", wintypes.DWORD), ("szDevice", wintypes.WCHAR * 32)]
+
+    class DisplayDevice(ctypes.Structure):
+        _fields_ = [("cb", wintypes.DWORD), ("DeviceName", wintypes.WCHAR * 32), ("DeviceString", wintypes.WCHAR * 128),
+                    ("StateFlags", wintypes.DWORD), ("DeviceID", wintypes.WCHAR * 128), ("DeviceKey", wintypes.WCHAR * 128)]
+
+    u = ctypes.windll.user32
+    found = []
+    proc = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HMONITOR, wintypes.HDC, ctypes.POINTER(wintypes.RECT), wintypes.LPARAM)
+
+    def each(hmon, hdc, rect, data):
+        mi = MonitorInfo()
+        mi.cbSize = ctypes.sizeof(mi)
+        u.GetMonitorInfoW(hmon, ctypes.byref(mi))
+        dd = DisplayDevice()
+        dd.cb = ctypes.sizeof(dd)
+        name = dd.DeviceString if u.EnumDisplayDevicesW(mi.szDevice, 0, ctypes.byref(dd), 0) else mi.szDevice
+        r = mi.rcMonitor
+        found.append({"name": name, "device": mi.szDevice, "x": r.left, "y": r.top,
+                      "width": r.right - r.left, "height": r.bottom - r.top, "primary": bool(mi.dwFlags & 1)})
+        return True
+
+    u.EnumDisplayMonitors(None, None, proc(each), 0)
+    return [{"n": i, **s} for i, s in enumerate(found, 1)]
 
 
 def no_power_throttling():
@@ -269,6 +311,8 @@ def main():
     ap.add_argument("out", nargs="?", help="utskriftens jsonl-fil; med --dir blir den <dir>/transcript.jsonl")
     ap.add_argument("--dir", help="inspelningens mapp: utskrift, ljud per kanal, skärmvideo och bilder")
     ap.add_argument("--screen", action="store_true", help="spela in skärmen som video och spara en bild när den ändras")
+    ap.add_argument("--monitor", type=int, help="vilken skärm (nummer från --list-screens); utan den alla skärmar")
+    ap.add_argument("--list-screens", action="store_true", help="lista skärmarna och avsluta")
     ap.add_argument("--them", default="De andra")
     ap.add_argument("--me", default="Jag")
     ap.add_argument("--lang", default="sv", help="sv, en … eller auto: språket upptäcks för varje yttrande")
@@ -278,7 +322,19 @@ def main():
     ap.add_argument("--threshold", type=float, default=0.006, help="ljudnivå som räknas som tal")
     ap.add_argument("--max-lag", type=float, default=30.0, help="sekunder efter talet då utskriften hoppar över ett yttrande")
     ap.add_argument("--model", default=None, help="standard: KBLab/kb-whisper-small för svenska, annars small")
+    ap.add_argument("--threads", type=int, default=THREADS, help="kärnor till taligenkänningen; resten till ljud, video och mötet")
     a = ap.parse_args()
+    if a.list_screens:
+        for m in screens():
+            print(f"{m['n']}. {m['name']} ({m['device']}): {m['width']}x{m['height']}"
+                  f"{' (huvudskärm)' if m['primary'] else ''}, position {m['x']},{m['y']}")
+        return
+    monitor = None
+    if a.monitor:
+        a.screen = True
+        monitor = next((m for m in screens() if m["n"] == a.monitor), None)
+        if not monitor:
+            ap.error(f"skärm {a.monitor} finns inte; se --list-screens")
     from pathlib import Path
     folder = Path(a.dir) if a.dir else None
     if folder:
@@ -299,13 +355,14 @@ def main():
     # och tiderna i början blev negativa.
     model_name = a.model or ("KBLab/kb-whisper-small" if a.lang == "sv" else "small")
     print(f"Laddar taligenkänningen ({model_name}) …")
-    model = WhisperModel(model_name, device="cpu", compute_type="int8")
+    model = WhisperModel(model_name, device="cpu", compute_type="int8", cpu_threads=a.threads)
 
     pa = pyaudio.PyAudio()
     sources = [(a.them, "them", pa.get_default_wasapi_loopback())]
     if not a.no_mic:
         sources.append((a.me, "me", pa.get_default_input_device_info()))
     incoming = {name: [] for name, _, _ in sources}
+    dropped = {name: 0 for name, _, _ in sources}  # block som ljudkortet tappade för att vi inte hann hämta dem
     tracks = {name: Track(Segmenter(a.threshold, a.pause, a.max), folder / f"{role}.wav" if folder else None)
               for name, role, _ in sources}
     lock = threading.Lock()
@@ -315,13 +372,15 @@ def main():
         rate, ch = int(dev["defaultSampleRate"]), max(1, min(2, dev["maxInputChannels"]))
 
         def cb(data, frames, info, status, name=name, ch=ch, rate=rate):
+            if status & pyaudio.paInputOverflow:
+                dropped[name] += 1
             x = np.frombuffer(data, dtype=np.int16).reshape(-1, ch).mean(axis=1) / 32768.0
             with lock:
                 incoming[name].append(to16k(rate, x))
             return (None, pyaudio.paContinue)
 
         streams.append(pa.open(format=pyaudio.paInt16, channels=ch, rate=rate, input=True,
-                               input_device_index=dev["index"], frames_per_buffer=1024, stream_callback=cb))
+                               input_device_index=dev["index"], frames_per_buffer=4096, stream_callback=cb))
         print(f"Lyssnar: {name} <- {dev['name']} ({rate} Hz)")
 
     wlock = threading.Lock()
@@ -346,12 +405,16 @@ def main():
     if folder and a.screen:
         import subprocess
         # Videon får lägre prioritet än utskriften: den tål att vänta, det gör inte liveutskriften.
-        screen = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "gdigrab", "-framerate", "5", "-i", "desktop",
+        region = ["-offset_x", str(monitor["x"]), "-offset_y", str(monitor["y"]),
+                  "-video_size", f"{monitor['width']}x{monitor['height']}"] if monitor else []
+        screen = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "gdigrab", "-framerate", "5", *region, "-i", "desktop",
                                    "-vf", "scale=-2:1080", "-c:v", "libx264", "-preset", "veryfast", "-crf", "30",
                                    "-pix_fmt", "yuv420p", str(folder / "screen.mp4")], stdin=subprocess.PIPE,
                                   creationflags=getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0))
-        threading.Thread(target=frames_loop, args=(folder / "frames", write, t0, stop), daemon=True).start()
-        print("Skärmen spelas in: screen.mp4, och en bild i frames/ när skärmen ändras.")
+        bbox = (monitor["x"], monitor["y"], monitor["x"] + monitor["width"], monitor["y"] + monitor["height"]) if monitor else None
+        threading.Thread(target=frames_loop, args=(folder / "frames", write, t0, stop, bbox), daemon=True).start()
+        which = f"skärm {monitor['n']}, {monitor['name']} {monitor['width']}x{monitor['height']}" if monitor else "alla skärmar"
+        print(f"Skärmen spelas in ({which}): screen.mp4, och en bild i frames/ när skärmen ändras.")
     print(f"Fil: {a.out}. Skriver ut när talaren pausar. Stoppa med en fil som heter STOP i mappen, eller Ctrl+C.")
 
     # Utskriften i en egen tråd, så att den aldrig håller upp inspelningen. Det som väntar slås ihop per talare.
@@ -413,8 +476,10 @@ def main():
         lags = sorted(stats["lag"])
         row = {"event": "status", "start": round(now, 1), "levels": {name: t.level() for name, t in tracks.items()},
                "lag": round(lags[len(lags) // 2]) if lags else None, "skipped": round(stats["skipped"]),
-               "echo": round(stats["echo"])}
+               "echo": round(stats["echo"]), "dropped": {k: v for k, v in dropped.items() if v}}
         stats["lag"], stats["skipped"], stats["echo"] = [], 0.0, 0.0
+        for k in dropped:
+            dropped[k] = 0
         write(row)
         print(status_text(row))
 
