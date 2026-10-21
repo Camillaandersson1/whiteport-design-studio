@@ -94,11 +94,29 @@ Uppmätt 2026-10-17 på Mårtens dator (8 kärnor, ingen grafikkort-acceleration
 | `small` (`--lang auto`) | 0,18 | Upptäcker svenska, men fler fel |
 | `medium` (`--lang auto`) | 0,49 | Inte bättre än KB-Whisper; med två ljudkällor nära realtid |
 
-Båda små modellerna hinner med live med god marginal.
+Siffrorna gäller långa bitar. **Varje bit kostar minst ungefär 2 sekunder**, eftersom Whisper alltid räknar på 30 sekunder ljud: 2 s ljud tar 2,4 s, 8 s tar 2,7 s och 28 s tar 4,1 s (mätt 2026-10-21). Många korta bitar, som "ja" och "mm" i mikrofonen, äter därför mest tid.
 
-**Fördröjning:** ljudet klipps vid pauser (0,5 s) och senast efter 8 sekunder (`--pause`, `--max`). Mätt med samma inspelning matad i realtid: text **4 sekunder** efter första ordet (median), högst 8,4. Bitar om 15 sekunder gav 15 till 20. Ett lägre tak (6 s) klipper oftare mitt i meningar. Riktig strömning ord för ord tolkar om ljudet varje sekund och räcker troligen inte för två källor på en dator utan grafikkort-acceleration. Talarna skiljs bara åt som "de andra" och "jag". ```bash
+**Fördröjning:** ljudet klipps vid pauser (0,5 s) och senast efter 8 sekunder (`--pause`, `--max`). Mätt 2026-10-21 med fyra minuter av ett riktigt möte genom högtalarna, med `--screen`: första repliken 13 sekunder efter start (modellen laddas före), sedan text **8 sekunder efter yttrandets början** (median), 12 för 90 % och högst 15. Räknat från när talaren slutat är det 3–4 sekunder. Talarna skiljs bara åt som "de andra" och "jag".
+
+```bash
 python agents/wds/tools/meeting-live/local.py .wds/live/<tid>-<titel>.jsonl --no-mic --them "<videon>"
 ```
+
+**Inspelningen och utskriften går var för sig.** Ljudet skrivs alltid till fil och tappas aldrig, hur långt efter utskriften än ligger. Utskriften går i en egen tråd:
+
+- Det som väntar på utskrift **slås ihop per talare**, upp till 25 sekunder per bit, så att utskriften kommer ikapp av sig själv.
+- **Eko sorteras bort live.** Hörs högtalarna i mikrofonen följer mikrofonens ljudnivå datorns ljud upp och ner; sådana bitar skrivs inte ut som "jag". I provet med datorns högtalare sorterades 28 av 67 ekobitar bort, och i Visita-mötet (hörlurar) bara 1 av 59 riktiga. Med hörlurar finns inget eko. `refine.py` tar bort ekot efteråt ur sin utskrift.
+- Ligger utskriften ändå mer än `--max-lag` sekunder (30) efter talet **hoppar den över** biten. Ljudet finns kvar, och den grundliga utskriften tar den.
+
+**Statusraden.** Efter 15 sekunder och sedan varje minut skrivs en rad i utskriften, som bevakningen visar:
+
+```
+== Status 05:15: De andra -20 dB, Mårten -46 dB · text 3 s efter talet · 8 s eko från högtalarna i mikrofonen ==
+```
+
+Ljudnivån per kanal visar att ljud kommer in (0 dB är fullt, under -60 i stort sett tyst, `inget ljud` om ljudkortet inte levererat något alls). "text N s efter talet" är hur långt efter utskriften ligger. Står det att sekunder hoppades över hinner datorn inte med. Läs statusraden i stället för filstorlekarna: Drive för skrivbordet visar inte nya storlekar förrän filen stängts.
+
+**Windows får inte strypa processen.** En process som startats av en agent i bakgrunden, medan ett videomöte har förgrunden, kan strypas av Windows (EcoQoS). `local.py` stänger av det för sig själv, och skärmvideon körs med lägre prioritet än utskriften.
 
 Använd den när Fireflies transkriberar på fel språk (då blir texten obegriplig redan första minuten) eller inte kommer igång.
 
@@ -112,8 +130,8 @@ python agents/wds/tools/meeting-live/local.py --dir "<inspelningens mapp>" [--sc
 
 | Fil | Innehåll |
 |---|---|
-| `transcript.jsonl` | Liveutskriften, med en rad `{"event": "frame", "file": …}` för varje ny bild |
-| `them.wav`, `me.wav` | Ljudet per kanal, 16 kHz. Lika långt som inspelningen: tystnad fylls i efter klockan, också när ingen säger något |
+| `transcript.jsonl` | Liveutskriften, med en rad `{"event": "frame", "file": …}` för varje ny bild och en statusrad varje minut |
+| `them.wav`, `me.wav` | Ljudet per kanal, 16 kHz. Lika långt som inspelningen: tystnad fylls i efter klockan, också när ingen säger något. Tiden i filen är samma som `start` i utskriften och tiden i bildernas namn |
 | `screen.mp4` | Skärmen, 5 bilder per sekund, 1080 p (`--screen`) |
 | `frames/<mm-ss>.jpg` | En bild när skärmen har ändrats, kontrollerat var femte sekund (`--screen`) |
 
@@ -125,7 +143,17 @@ python agents/wds/tools/meeting-live/local.py --dir "<inspelningens mapp>" [--sc
 python agents/wds/tools/meeting-live/refine.py "<inspelningens mapp>" [--model KBLab/kb-whisper-medium]
 ```
 
-KB-Whisper medium laddas ned första gången (cirka 1,5 GB). Utan grafikkort-acceleration tar den ungefär halva samtalets längd per kanal.
+KB-Whisper medium laddas ned första gången (cirka 1,5 GB). Utan grafikkort-acceleration tar den ungefär halva samtalets längd per kanal. Den skriver först hur mycket av varje ljudfil som har ljud (`them.wav: 19:13 lång, ljud i 4:39 av den`); är det mycket mindre än inspelningens längd har ljud tappats. `final.jsonl` får inspelningens sluttid och längd, så att `archive` skriver rätt tid i huvudet och längden i registret.
+
+#### Lärdomar från Visita-mötet 2026-10-21
+
+Det första riktiga mötet med `--screen` (19 minuter, Teams) gav bara de första 4,5 minuterna. Orsakerna, som nu är åtgärdade:
+
+1. **Utskriften och inspelningen gick i samma slinga.** Under mötet tog utskriften ungefär tre gånger längre tid än ljudet (Teams, skärmvideon och många korta bitar från mikrofonen). Medan slingan skrev ut låg ljudet kvar i minnet, och vid stopp kastades det: 15 minuter ljud skrevs aldrig till fil. Liveutskriften kom därför ungefär en gång i minuten och hamnade allt längre efter. Det gick inte att upptäcka under mötet.
+2. **Modellen laddades efter att ljudet börjat spelas in,** så de första 25 sekundernas ljud hamnade före klockans start: negativa tider i början. Efter det räknades tiden ut från klockan minus det ljud som väntade, och blev fel när ljud saknades.
+3. **`final.jsonl` hade ingen sluttid,** så `archive` skrev "11:08–11:08" och lämnade längden tom.
+
+Resten av det mötet går inte att få fram: ljudet efter ungefär 4:40 skrevs aldrig till disk, och skärmvideon har inget ljud.
 
 ### Arkivera
 
@@ -156,6 +184,13 @@ En rad per händelse, i ordning:
 
 `seed: true` är repliker från före anslutningen, `fill: true` repliker som fyllde en lucka. `start` är sekunder från mötets början.
 
+Den lokala utskriften har också statusrader och längden i slutraden:
+
+```json
+{"event": "status", "start": 75.1, "levels": {"De andra": -20, "Mårten": -45}, "lag": 3, "skipped": 0, "echo": 8}
+{"event": "ended", "reason": "stoppad", "at": "…", "duration": 253.4}
+```
+
 ## Fel
 
 | Vad som händer | Säg och gör |
@@ -165,6 +200,8 @@ En rad per händelse, i ordning:
 | `auth failed` | Nyckeln är fel eller har gått ut. Kontrollera Bitwarden-posten. |
 | `Paketet saknas` | Installera `python-socketio[client]` och gå med igen. |
 | Bakgrundsprocessen avslutas oväntat | Läs dess utskrift och fortsätt i samma fil med `join --continue <fil>`. |
+| Statusraden visar `inget ljud` eller under -60 dB för en kanal | Fel enhet eller avstängd mikrofon. Stoppa och starta om med rätt enhet. |
+| Statusraden visar att sekunder hoppades över | Datorn hinner inte skriva ut live. Ljudet spelas in ändå; den grundliga utskriften tar det. Hörlurar i stället för högtalare minskar arbetet. |
 | Texten är obegriplig eller på fel språk | Fireflies har fel språkinställning. Säg det direkt, starta den lokala reserven, och be personen byta språk i Fireflies (det ger ett nytt mötes-id; gå med i det också). `archive` tar med alla delarna. |
 
 Fördröjningen från tal till fil är några sekunder (Fireflies taligenkänning), plus bevakningens intervall.

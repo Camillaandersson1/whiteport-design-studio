@@ -24,7 +24,25 @@ from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
 sys.path.insert(0, str(Path(__file__).parent))
-from local import is_speech  # noqa: E402  samma filter mot påhittad text som live
+from local import RATE, is_speech  # noqa: E402  samma filter mot påhittad text som live
+
+
+def read_wav(path):
+    import wave
+    import numpy as np
+    with wave.open(str(path)) as w:
+        return np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16).astype(np.float32) / 32768
+
+
+def sounding(x):
+    """Sekunder med något ljud alls. Ifylld tystnad är exakt noll; en mikrofon brusar alltid lite."""
+    secs = len(x) // RATE
+    return int((x[:secs * RATE].reshape(secs, RATE) != 0).any(axis=1).sum()) if secs else 0
+
+
+def clock(sec):
+    s = int(sec)
+    return f"{s // 60}:{s % 60:02d}"
 
 
 def norm(text):
@@ -52,6 +70,9 @@ def main():
     if live.exists():
         head = next((json.loads(l) for l in live.read_text(encoding="utf-8").splitlines() if '"joined"' in l), {})
     channels = head.get("channels") or {"them": "De andra", "me": "Jag"}
+    end = {}
+    if live.exists():
+        end = next((json.loads(l) for l in live.read_text(encoding="utf-8").splitlines() if '"ended"' in l), {})
 
     from faster_whisper import WhisperModel
     model = WhisperModel(a.model, device="cpu", compute_type="int8")
@@ -60,8 +81,10 @@ def main():
         wav = folder / f"{role}.wav"
         if not wav.exists():
             continue
+        x = read_wav(wav)
+        print(f"{wav.name}: {clock(len(x) / RATE)} lång, ljud i {clock(sounding(x))} av den (resten är tystnad som fyllts i)")
         t = time.time()
-        segs, info = model.transcribe(str(wav), language=None if a.lang == "auto" else a.lang,
+        segs, info = model.transcribe(x, language=None if a.lang == "auto" else a.lang,
                                       vad_filter=True, beam_size=5, condition_on_previous_text=True)
         rows[role] = [{"start": round(s.start, 1), "speaker": channels.get(role, role), "text": s.text.strip(), "lang": info.language}
                       for s in segs if is_speech(s)]
@@ -77,7 +100,9 @@ def main():
                              "at": head.get("at", "")}, ensure_ascii=False) + "\n")
         for i, r in enumerate(merged, 1):
             fh.write(json.dumps({"n": i, **r}, ensure_ascii=False) + "\n")
-        fh.write(json.dumps({"event": "ended", "reason": "grundlig utskrift"}) + "\n")
+        # Sluttid och längd från inspelningen, så att archive får rätt tid och längd.
+        fh.write(json.dumps({"event": "ended", "reason": "grundlig utskrift",
+                             **{k: end[k] for k in ("at", "duration") if k in end}}) + "\n")
     print(f"{out}: {len(merged)} repliker, {removed} eko borttagna")
 
 

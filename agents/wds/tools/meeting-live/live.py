@@ -27,7 +27,7 @@ import re
 import sys
 import threading
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from urllib import request
 
@@ -319,6 +319,16 @@ def line_text(row):
         return f"== Ansluten: {row.get('title')} =="
     if ev == "frame":
         return f"== Bild {clock(row.get('start'))}: {row.get('file')} =="
+    if ev == "status":
+        levels = ", ".join(f"{k} {'inget ljud' if v is None else f'{v} dB'}" for k, v in (row.get("levels") or {}).items())
+        s = f"== Status {clock(row.get('start'))}: {levels}"
+        if row.get("lag") is not None:
+            s += f" · text {row['lag']} s efter talet"
+        if row.get("skipped"):
+            s += f" · {row['skipped']} s hoppades över live (kommer med i den grundliga utskriften)"
+        if row.get("echo"):
+            s += f" · {row['echo']} s eko från högtalarna i mikrofonen"
+        return s + " =="
     if ev == "reconnecting":
         return "== Anslutningen föll, ansluter igen =="
     if ev == "filled":
@@ -392,6 +402,23 @@ def transcript_full(meeting_id):
     return graphql(q, {"id": meeting_id})["transcript"]
 
 
+def local_span(rs):
+    """Start och slut för en lokal inspelning: starten i huvudet, längden ur slutradens duration, annars
+    dess klockslag, annars den sista repliken. None om huvudet saknar tid."""
+    head = next((r for r in rs if r.get("event") in ("joined", "rejoined") and r.get("at")), None)
+    if not head:
+        return None
+    start = datetime.fromisoformat(head["at"])
+    end = next((r for r in rs if r.get("event") == "ended"), {})
+    if end.get("duration"):
+        secs = float(end["duration"])
+    elif end.get("at") and end["at"] > head["at"]:
+        secs = (datetime.fromisoformat(end["at"]) - start).total_seconds()
+    else:
+        secs = max((float(r.get("start") or 0) for r in rs if "text" in r), default=0.0)
+    return start, start + timedelta(seconds=secs)
+
+
 def cmd_archive():
     files = [Path(a) for a in sys.argv[2:] if a.endswith(".jsonl")]
     if not files:
@@ -405,6 +432,10 @@ def cmd_archive():
     meeting_ids = list(dict.fromkeys(m for m in mid_of.values() if m))
     title = arg("--title") or next((r["title"] for r in heads if r.get("meeting_id")), None) or (heads[0]["title"] if heads else "Meeting")
     ats = sorted(r["at"] for rs in rows.values() for r in rs if r.get("at"))
+    # En lokal inspelning: start i huvudet, längd i slutraden. final.jsonl från refine.py hade förut ingen sluttid,
+    # så huvudet blev "11:08–11:08" och längden tom.
+    recs = [s for s in (local_span(rs) for f, rs in rows.items() if not mid_of[f]) if s]
+    ats = sorted(ats + [t.isoformat(timespec="seconds") for s in recs for t in s])
     day = ats[0][:10] if ats else datetime.now().strftime("%Y-%m-%d")
     span = f"{ats[0][11:16]}–{ats[-1][11:16]}" if ats else ""
 
@@ -439,6 +470,8 @@ def cmd_archive():
             local = [(r.get("start"), r.get("speaker"), r["text"]) for r in rows[f] if "text" in r]
             head = next((r.get("title") for r in rows[f] if r.get("title")), L["local"])
             parts.append((head, L["local"], local))
+    if not minutes and recs:
+        minutes = round((max(e for _, e in recs) - min(s for s, _ in recs)).total_seconds() / 60)
 
     speakers = sorted({s for _, _, ls in parts for _, s, _ in ls if s})
     name = f"{day}-{slug(title)}.md"
