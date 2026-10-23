@@ -22,7 +22,7 @@ Strömmen och bevakningen är två processer. Bevakningen kan startas om när so
 
 ## Konfiguration
 
-**Ny dator:** kör `powershell -ExecutionPolicy Bypass -File agents\wds	ools\meeting-live\setup.ps1` (med `-Preload` för att också hämta och konvertera modellerna för den grundliga utskriften). Det installerar Python om det saknas, paketen, ffmpeg och, med Intel-grafik, OpenVINO, och kontrollerar att skärmarna hittas. Går att köra om.
+**Ny dator:** kör `powershell -ExecutionPolicy Bypass -File agents/wds/tools/meeting-live/setup.ps1` (med `-Preload` för att också hämta och konvertera modellerna för den grundliga utskriften). Det installerar Python om det saknas, paketen, ffmpeg och, med Intel-grafik, OpenVINO, och kontrollerar att skärmarna hittas. Går att köra om.
 
 | Vad | Var |
 |---|---|
