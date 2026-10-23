@@ -142,6 +142,8 @@ Skills ligger i repot för det projekt, initiativ eller företag de gäller. Per
 
 Resten gäller när sessionen skapade, ändrade, flyttade eller tog bort en skill, ett tool eller ett skript.
 
+- **Inget som fungerar blir kvar i en temporär mapp.** Gå igenom sessionens arbetsmapp (scratchpad, `%TEMP%`, sessionsmappar) och miljöer utanför repona (till exempel `~/.venvs`). Ett skript, en installation eller en inställning som fungerade flyttas till källrepot för det tool det hör till, med sökvägar och mätningar i toolets beskrivning. OpenVINO-utskriften från 2026-10-14 låg bara i en temporär mapp och byggdes om nio dagar senare (2026-10-23).
+
 - **Ändringen ska ligga i källan.** Varje skill har exakt ett källrepo. En ändring som gjordes i en lokal kopia, till exempel `~/.claude/commands`, en adaptermapp eller en synkad `agents/wds/`, flyttas till källrepot. Där görs commit och push. Externa källor ändras uppströms.
 - **En commit per skill eller tool.** Varje ändrad skill eller tool får en egen commit med bara den filen och dess skript, aldrig annat arbete. Meddelandet ska vara `skill(<namn>): <vad som ändrades och varför>` eller `tool(<namn>): …`. Då visar `git log -- <fil>` hur skillen har utvecklats.
 - **Katalogen uppdateras.** Har personen en skillskatalog i sitt privata skåp (`skills.md`, och `skills.json` om den finns), lägg in nya skills och källor, och ändra raden för det som flyttats eller tagits bort. Skriv över inget. Uppdatera raden där skillen står.
