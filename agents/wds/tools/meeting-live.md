@@ -158,7 +158,31 @@ python agents/wds/tools/meeting-live/local.py --dir "<inspelningens mapp>" [--mo
 python agents/wds/tools/meeting-live/refine.py "<inspelningens mapp>" [--model KBLab/kb-whisper-medium]
 ```
 
-KB-Whisper medium laddas ned första gången (cirka 1,5 GB). Utan grafikkort-acceleration tar den ungefär halva samtalets längd per kanal. Den skriver först hur mycket av varje ljudfil som har ljud (`them.wav: 19:13 lång, ljud i 4:39 av den`); är det mycket mindre än inspelningens längd har ljud tappats. `final.jsonl` får inspelningens sluttid och längd, så att `archive` skriver rätt tid i huvudet och längden i registret.
+KB-Whisper medium laddas ned första gången (cirka 1,5 GB). Utan grafikkort-acceleration tar den ungefär halva samtalets längd per kanal.
+
+#### Grafikkortet (Intel-grafik via OpenVINO)
+
+`refine.py --device auto` (standard) använder Intel-grafiken när den finns, annars processorn. `--device gpu` eller `--device cpu` tvingar fram ett av dem; `--first <sekunder>` och `--out <fil>` är till för att mäta utan att skriva över `final.jsonl`.
+
+| Vad | Var |
+|---|---|
+| Paket | `openvino-genai`, och för konverteringen en gång `optimum-intel[openvino]` |
+| Modeller | `~/.venvs/models/<modell>-ov` (fp16, till exempel `kb-whisper-small-ov` från 2026-10-14) används först, annars `<modell>-int8-ov`, som `refine.py` konverterar själv första gången |
+| Kompilerade kärnor | `cache/` i modellmappen (`CACHE_DIR`), så att nästa start går på några sekunder |
+| Mediefiler med tider per ord | [meeting-live/ov_transcribe.py](meeting-live/ov_transcribe.py): videor och ljudfiler, hela filen i ett anrop, med `<id>.words.json` |
+
+Taldetekteringen (VAD) görs fortfarande av faster-whisper, och bara talet skickas till grafikkortet, i bitar om högst 28 sekunder. En mötesinspelning har långa tysta partier ifyllda med nollor, och i dem hittar Whisper annars på text. `ov_transcribe.py` skickar hela filen, vilket fungerar för videor utan sådan tystnad.
+
+Uppmätt på Mårtens dator (Intel Iris Xe):
+
+| Modell och enhet | Ljud | Tid mot realtid |
+|---|---|---|
+| KB-Whisper small, fp16, grafikkortet (2026-10-14) | Tre YouTube-videor, 18–33 min | 8,0–8,9x |
+| KB-Whisper medium, int8, grafikkortet (2026-10-23) | Fem minuter möte, de andras kanal | 3,7x, medan processorn samtidigt körde en annan utskrift |
+| KB-Whisper medium, int8, grafikkortet (2026-10-23) | Samma fem minuter, mikrofonen (mest tystnad) | 11,1x |
+| KB-Whisper medium, int8, processorn | Möten | cirka 2x |
+
+**Lärdom (2026-10-23):** OpenVINO-vägen byggdes 2026-10-14 men låg bara i en temporär arbetsmapp och i `~/.venvs`, och byggdes därför om nio dagar senare. Kod som fungerar läggs i det här repot samma dag. Den skriver först hur mycket av varje ljudfil som har ljud (`them.wav: 19:13 lång, ljud i 4:39 av den`); är det mycket mindre än inspelningens längd har ljud tappats. `final.jsonl` får inspelningens sluttid och längd, så att `archive` skriver rätt tid i huvudet och längden i registret.
 
 #### Lärdomar från Visita-mötet 2026-10-21
 
