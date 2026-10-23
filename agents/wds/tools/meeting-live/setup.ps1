@@ -1,4 +1,4 @@
-# setup.ps1: installerar allt som inspelningen och utskriften behöver på en Windows-dator.
+﻿# setup.ps1: installerar allt som inspelningen och utskriften behöver på en Windows-dator.
 # Del av WDS (agents/wds/tools/meeting-live.md). Går att köra om hur många gånger som helst.
 #
 #   powershell -ExecutionPolicy Bypass -File <WDS>\agents\wds\tools\meeting-live\setup.ps1 [-Preload]
