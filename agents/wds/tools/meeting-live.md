@@ -26,7 +26,7 @@ Strömmen och bevakningen är två processer. Bevakningen kan startas om när so
 |---|---|
 | Fireflies språk | **Multi-Language på alla möten** (Mårten, 2026-10-17), i Fireflies inställningar: flera språk i samma möte, beta. Språket går inte att sätta i kalenderinbjudan. |
 | Fireflies-nyckeln | Bitwarden-posten `Fireflies API Key`, lösenordsfältet. Hämtas vid körning, skrivs aldrig till fil. |
-| Python-paket | `python -m pip install "python-socketio[client]"` (en gång per dator). Den lokala reserven: `pyaudiowpatch faster-whisper numpy`. |
+| Python-paket | `python -m pip install "python-socketio[client]"` (en gång per dator). Den lokala inspelningen: `pyaudiowpatch faster-whisper numpy pillow`, och `ffmpeg` i PATH för skärmvideon (`winget install Gyan.FFmpeg`). Grafikkortet: se nedan. |
 | Mötesfilen | `.wds/live/` i repots rot, arbetsmaterial under mötet. `.wds/` är gitignorerad. |
 | Mötesarkivet | `communication/meetings/` på den nivå det gäller (repots rot för en kund), med registret `communication/meetings.md`. Repots `AGENTS.md` kan ange en annan plats. |
 
