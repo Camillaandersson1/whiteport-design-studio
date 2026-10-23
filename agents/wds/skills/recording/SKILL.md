@@ -1,6 +1,6 @@
 ---
 name: recording
-description: Spelar in allt som hörs, och på begäran det som syns, på personens dator, skriver ut det live och grundligt efteråt. Media stannar i personens privata mediamapp; utskriften hamnar i rätt projekt. Använd när personen säger "starta inspelning", vill ha ett samtal, ett möte, en video eller ett webbinarium utskrivet, eller vill att agenten följer det som visas på skärmen.
+description: Spelar in allt som hörs, och på begäran det som syns, på personens dator, skriver ut det live och grundligt efteråt. Media stannar i personens privata mediamapp; utskriften hamnar i rätt projekt. Använd när personen vill att agenten är med i ett möte eller samtal, med vilka ord som helst ("spela in", "ta del av mötet", "delta i mötet", "gå med", "join", "lyssna", "livetolka"), vill ha ett samtal, en video eller ett webbinarium utskrivet, eller vill att agenten följer det som visas på skärmen. Fireflies bara när personen säger Fireflies.
 used_by: [idun, saga, freya, mimir]
 version: 1.0
 tools: [wds/meeting-live, wds/git]
@@ -18,13 +18,13 @@ Hur det görs står i [meeting-live-toolet](../../tools/meeting-live.md): `local
 
 ## Starta
 
-Personen ska bara behöva säga **"spela in"** (eller "starta inspelning", "livetolka mötet"). Agenten förstår direkt, kopplar upp allt och kontrollerar ljudet själv. Den enda frågan före start är vilken skärm som ska spelas in (Mårten, 2026-10-21).
+Personen ska kunna säga det med vilka ord som helst: **"spela in"**, "ta del av mötet", "delta i mötet", "gå med i mötet", "join", "livetolka mötet". Allt som betyder att agenten ska vara med i ett samtal är den här skillen (Mårten, 2026-10-23: "ta del av mötet" gick till Fireflies-joinen och kostade starten av mötet). Agenten förstår direkt, kopplar upp allt och kontrollerar ljudet själv. Den enda frågan före start är vilken skärm som ska spelas in (Mårten, 2026-10-21).
 
 **Det här är den lokala inspelningen, inte Fireflies.** Gå aldrig med via Fireflies (`/join`, `live.py join`) när personen säger "spela in": den 21 oktober kostade det sex minuter av ett möte. Fireflies används bara när personen uttryckligen säger Fireflies.
 
 **Beslut (Mårten, 2026-10-21): vi går bort från Fireflies.** Fireflies klarar språken dåligt, och den lokala utskriften svarar mycket snabbare. Lokal inspelning är standard. En egen mötesbot för Google Meet ska byggas för de fall där en synlig deltagare behövs.
 
-1. **Fråga vilken skärm**, i ett meddelande med knappar: lista skärmarna som är anslutna (namn, upplösning, vilken som är huvudskärm) plus "ingen skärm". Inget annat i frågan.
+1. **Fråga vilken skärm**, i ett meddelande med knappar (Mårten 2026-10-23: "snyggt", behåll det så): lista skärmarna som är anslutna (namn, upplösning, vilken som är huvudskärm) plus "ingen skärm". Inget annat i frågan.
 2. **Starta direkt** efter svaret: den valda skärmen, datorns ljud och mikrofonen. Bara när personen säger att det är en video eller ett webbinarium: `--no-mic`.
    - **Mediamappen:** `recordings:` i `.wds/me.md`. Mappen får namnet `<datum>_<tid>-inspelning`; titeln kommer med i arkivet efteråt. Saknas `recordings:`: föreslå en plats i personens privata Drive, fråga en gång och skriv svaret i `.wds/me.md`. Det är den enda fråga som får komma före start.
    - Talarna heter `--them "De andra" --me "<personens namn>"` tills vidare. Namnen sätts i arkivet.
@@ -40,7 +40,7 @@ Alla i samtalet vet att det spelas in. Det är lagligt att spela in ett samtal m
 
 ## Under inspelningen
 
-Inspelningen går vidare tills personen säger stopp, också när ingen säger något och när ingen sitter vid datorn: ljudet är lika långt som inspelningen, och datorn hålls vaken. Locket ska vara öppet. Följ samtalet som i [live-meeting](../live-meeting.md): korta rader i chatten bara när någon frågar något eller något behöver sägas nu. Med skärmen igång finns en bild för varje gång skärmen ändrats (`== Bild … ==` i bevakningen). Titta på den när det som sägs hänger på det som visas: en siffra i en presentation, ett dokument, en sajt.
+Inspelningen går vidare tills personen säger stopp, också när ingen säger något och när ingen sitter vid datorn: ljudet är lika långt som inspelningen, och datorn hålls vaken. Locket ska vara öppet. Följ samtalet som i [live-meeting](../live-meeting.md): korta rader i chatten bara när någon frågar något eller något behöver sägas nu. Bevakningen väcker agenten för varje replik; svara då inte "jag följer med" på varje, utan skriv bara när det finns något att säga (2026-10-23: ett femtio minuters möte gav ett hundratal sådana rader). Med skärmen igång finns en bild för varje gång skärmen ändrats (`== Bild … ==` i bevakningen). Titta på den när det som sägs hänger på det som visas: en siffra i en presentation, ett dokument, en sajt.
 
 ## Stoppa
 
