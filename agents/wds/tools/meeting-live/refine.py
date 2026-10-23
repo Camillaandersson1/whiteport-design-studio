@@ -12,7 +12,8 @@ final.jsonl i samma format som liveutskriften, så att `live.py archive` tar den
 Kräver: faster-whisper. KB-Whisper medium laddas ned första gången (cirka 1,5 GB).
 På processorn tar medium ungefär halva samtalets längd per kanal.
 
-Grafikkortet (--device gpu, eller auto när ett finns): Intel-grafik via OpenVINO (paketen openvino-genai och,
+NVIDIA-kort (--device cuda, eller auto): faster-whisper på CUDA, float16; kräver CUDA-biblioteken som setup.ps1
+installerar. Intel-grafik (--device gpu, eller auto): OpenVINO (paketen openvino-genai och,
 en gång för konverteringen, optimum-intel[openvino]). Modellen konverteras första gången till
 ~/.venvs/models/<modell>-int8-ov (en befintlig <modell>-ov används först). faster-whisper hittar fortfarande var det finns tal (VAD), så att
 tystnaden aldrig skrivs ut; talet skrivs ut på grafikkortet i bitar om högst 28 sekunder. Utan grafikkort,
@@ -30,7 +31,7 @@ from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
 sys.path.insert(0, str(Path(__file__).parent))
-from local import RATE, is_speech  # noqa: E402  samma filter mot påhittad text som live
+from local import RATE, cuda_available, is_speech  # noqa: E402  samma filter mot påhittad text som live
 
 
 def read_wav(path):
@@ -125,8 +126,8 @@ def main():
     ap.add_argument("dir")
     ap.add_argument("--model", default="KBLab/kb-whisper-medium")
     ap.add_argument("--lang", default="sv", help="sv, en … eller auto")
-    ap.add_argument("--device", default="auto", choices=["auto", "gpu", "cpu"],
-                    help="auto: Intel-grafik via OpenVINO när den finns, annars processorn")
+    ap.add_argument("--device", default="auto", choices=["auto", "gpu", "cuda", "cpu"],
+                    help="auto: NVIDIA (CUDA) eller Intel-grafik (OpenVINO) när det finns, annars processorn")
     ap.add_argument("--first", type=float, help="bara de första N sekunderna (för att mäta)")
     ap.add_argument("--out", default="final.jsonl", help="filnamn i mappen (standard final.jsonl)")
     a = ap.parse_args()
@@ -141,7 +142,10 @@ def main():
         end = next((json.loads(l) for l in live.read_text(encoding="utf-8").splitlines() if '"ended"' in l), {})
 
     pipe, model, device = None, None, "cpu"
-    if a.device == "gpu" or (a.device == "auto" and gpu_available()):
+    if a.device == "cuda" or (a.device == "auto" and cuda_available()):
+        from faster_whisper import WhisperModel
+        model, device = WhisperModel(a.model, device="cuda", compute_type="float16"), "cuda"
+    elif a.device == "gpu" or (a.device == "auto" and gpu_available()):
         try:
             import openvino_genai
             md = ov_model_dir(a.model)
@@ -149,10 +153,10 @@ def main():
             device = "gpu"
         except Exception as e:
             print(f"Grafikkortet gick inte att använda ({e}); kör på processorn.")
-    if pipe is None:
+    if pipe is None and model is None:
         from faster_whisper import WhisperModel
         model = WhisperModel(a.model, device="cpu", compute_type="int8")
-    print(f"Enhet: {'Intel-grafik (OpenVINO)' if device == 'gpu' else 'processorn (faster-whisper)'}")
+    print("Enhet: " + {"gpu": "Intel-grafik (OpenVINO)", "cuda": "NVIDIA-kortet (CUDA, faster-whisper)"}.get(device, "processorn (faster-whisper)"))
     rows = {}
     for role in ("them", "me"):
         wav = folder / f"{role}.wav"

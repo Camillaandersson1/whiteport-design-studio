@@ -50,6 +50,15 @@ def to16k(rate, x):
     return np.interp(np.linspace(0, len(x) - 1, m), np.arange(len(x)), x).astype(np.float32)
 
 
+def cuda_available():
+    """Ett NVIDIA-kort som faster-whisper (CTranslate2) kan använda."""
+    try:
+        import ctranslate2
+        return ctranslate2.get_cuda_device_count() > 0
+    except Exception:
+        return False
+
+
 def is_speech(seg, no_speech=0.6, logprob=-1.0):
     """Whisper hittar ibland på text i brus och korta ljud. Släpp bara igenom det modellen själv tror är tal.
 
@@ -355,7 +364,11 @@ def main():
     # och tiderna i början blev negativa.
     model_name = a.model or ("KBLab/kb-whisper-small" if a.lang == "sv" else "small")
     print(f"Laddar taligenkänningen ({model_name}) …")
-    model = WhisperModel(model_name, device="cpu", compute_type="int8", cpu_threads=a.threads)
+    if cuda_available():  # NVIDIA-kort: faster-whisper på CUDA
+        model = WhisperModel(model_name, device="cuda", compute_type="float16")
+        print("Taligenkänning på NVIDIA-kortet (CUDA)")
+    else:
+        model = WhisperModel(model_name, device="cpu", compute_type="int8", cpu_threads=a.threads)
 
     pa = pyaudio.PyAudio()
     sources = [(a.them, "them", pa.get_default_wasapi_loopback())]

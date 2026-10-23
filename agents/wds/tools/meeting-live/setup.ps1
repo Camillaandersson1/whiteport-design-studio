@@ -7,7 +7,7 @@
 #   1. Python 3 (winget) om det saknas
 #   2. Paketen för inspelning och liveutskrift: pyaudiowpatch, faster-whisper, numpy, pillow, python-socketio
 #   3. ffmpeg (winget) för skärmvideon
-#   4. Intel-grafik: openvino-genai och optimum-intel, så att den grundliga utskriften går på grafikkortet
+#   4. Grafikkortet: Intel-grafik får openvino-genai och optimum-intel, NVIDIA får CUDA-biblioteken (cuBLAS, cuDNN)
 #   5. Laddar ned KB-Whisper small (liveutskriften) i förväg; -Preload tar också medium och,
 #      med Intel-grafik, konverteringen till OpenVINO (några minuter)
 #   6. Kontrollerar att inspelningen hittar skärmarna, och säger till om recordings: saknas i ~/.wds/me.md
@@ -50,8 +50,15 @@ $intel = $gpus -match "Intel"
 if ($intel) {
     & $py -m pip install --quiet --upgrade openvino-genai "optimum-intel[openvino]" "httpcore>=1.0.9"
     & $py -c "import openvino as ov; d = ov.Core().available_devices; print('OpenVINO ser:', d); print('Grafikkortet används' if 'GPU' in d else 'Inget GPU för OpenVINO: processorn används')"
-} else {
-    Write-Host "Ingen Intel-grafik: den grundliga utskriften går på processorn." -ForegroundColor Yellow
+}
+$nvidia = $gpus -match "NVIDIA"
+if ($nvidia) {
+    # faster-whisper (CTranslate2) på CUDA 12 behöver cuBLAS och cuDNN 9; pip-paketen räcker, ingen CUDA Toolkit
+    & $py -m pip install --quiet --upgrade nvidia-cublas-cu12 "nvidia-cudnn-cu12==9.*"
+    & $py -c "import ctranslate2; n = ctranslate2.get_cuda_device_count(); print('CUDA-enheter:', n); print('NVIDIA-kortet används' if n else 'CUDA hittas inte: kontrollera NVIDIA-drivrutinen')"
+}
+if (-not $intel -and -not $nvidia) {
+    Write-Host "Inget grafikkort som stöds: utskriften går på processorn." -ForegroundColor Yellow
 }
 
 Step "5. Modeller"

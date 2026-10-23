@@ -164,6 +164,8 @@ KB-Whisper medium laddas ned första gången (cirka 1,5 GB). Utan grafikkort-acc
 
 #### Grafikkortet (Intel-grafik via OpenVINO)
 
+**NVIDIA-kort (2026-10-23, inte provat än):** `local.py` och `refine.py --device auto` använder faster-whisper på CUDA (float16) när ett NVIDIA-kort finns, före Intel-grafiken. `setup.ps1` installerar cuBLAS och cuDNN 9 som pip-paket. Kontrollera på första datorn med NVIDIA-kort att `ctranslate2.get_cuda_device_count()` blir större än noll; hittas inte DLL-filerna, lägg `site-packages/nvidia/*/bin` i PATH.
+
 `refine.py --device auto` (standard) använder Intel-grafiken när den finns, annars processorn. `--device gpu` eller `--device cpu` tvingar fram ett av dem; `--first <sekunder>` och `--out <fil>` är till för att mäta utan att skriva över `final.jsonl`.
 
 | Vad | Var |
