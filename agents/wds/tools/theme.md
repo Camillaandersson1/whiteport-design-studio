@@ -61,6 +61,8 @@ Write it from the brand's `design-tokens.md` when the first artefact is rendered
 
 ## Markdown in VS Code in the brand's look
 
+**Warning (2026-10-24):** the Markdown Editor extension (zaaack) rewrites the whole file in its own format on every save: tables are padded, blank lines added, and **frontmatter is removed**. It damaged two WDS step files and two client files. Do not use it to edit files in a repo; VS Code's preview is the safe default (`"*.md": "vscode.markdown.preview.editor"`). The styling below applies only while it is in use.
+
 With the Markdown Editor extension (zaaack) as the editor for `.md`, markdown is edited like a document. This writes the brand's look into the repo's `.vscode/settings.json` (`markdown-editor.customCss`), keeping every other setting:
 
 ```bash
